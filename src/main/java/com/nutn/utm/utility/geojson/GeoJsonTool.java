@@ -1,4 +1,4 @@
-package com.nutn.utm.geojson;
+package com.nutn.utm.utility.geojson;
 
 
 /**

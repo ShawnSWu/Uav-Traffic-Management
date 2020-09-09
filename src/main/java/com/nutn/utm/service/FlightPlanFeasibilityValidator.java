@@ -2,7 +2,7 @@ package com.nutn.utm.service;
 
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
-import com.nutn.utm.model.dto.form.FormValidationMessage;
+import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.utility.DateTimeUtils;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,11 @@ public class FlightPlanFeasibilityValidator {
     public void validateFeasibility(FlightPlanApplicationForm planFormDTO) {
         if (!isBefore1Hour(planFormDTO)) {
             throw new InvalidRequestException(planFormDTO.getStartTime(), "expectedStartTime",
-                    FormValidationMessage.EXPECTED_TAKEOFF_TIME_NOT_BEFORE_1Hour_MESSAGE);
+                    ValidationMessage.EXPECTED_TAKEOFF_TIME_NOT_BEFORE_1Hour_MESSAGE);
         }
         if (!isArrivalTimeLaterThanTakeoffTime(planFormDTO)) {
             throw new InvalidRequestException(planFormDTO.getStartTime(), "expectedEndTime",
-                    FormValidationMessage.EXPECTED_TAKEOFF_TIME_LATER_THAN_ARRIVAL_TIME_MESSAGE);
+                    ValidationMessage.EXPECTED_TAKEOFF_TIME_LATER_THAN_ARRIVAL_TIME_MESSAGE);
         }
     }
 
