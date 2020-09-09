@@ -1,4 +1,4 @@
-package com.nutn.utm.geojson;
+package com.nutn.utm.utility.geojson;
 
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureDto;

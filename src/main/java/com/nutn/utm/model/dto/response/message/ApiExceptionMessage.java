@@ -1,4 +1,4 @@
-package com.nutn.utm.model.dto.response;
+package com.nutn.utm.model.dto.response.message;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)

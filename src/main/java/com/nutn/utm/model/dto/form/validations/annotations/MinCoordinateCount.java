@@ -1,6 +1,6 @@
 package com.nutn.utm.model.dto.form.validations.annotations;
 
-import com.nutn.utm.model.dto.form.FormValidationMessage;
+import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.model.dto.form.validations.validators.FlightPlanWayPointsAmountValidator;
 
 import javax.validation.Constraint;
@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy= FlightPlanWayPointsAmountValidator.class)
 public @interface MinCoordinateCount {
 
-    String message() default FormValidationMessage.FLIGHT_PATH_POINT_LESS_THEN_SPECIFIED_COUNT;
+    String message() default ValidationMessage.FLIGHT_PATH_POINT_LESS_THEN_SPECIFIED_COUNT;
 
     int count();
 

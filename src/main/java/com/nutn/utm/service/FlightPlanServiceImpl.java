@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.exception.NotFoundFlightPlanException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
-import com.nutn.utm.model.dto.form.FormValidationMessage;
-import com.nutn.utm.model.dto.response.ApiExceptionMessage;
+import com.nutn.utm.model.dto.response.message.ValidationMessage;
+import com.nutn.utm.model.dto.response.message.ApiExceptionMessage;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Pilot;
 import com.nutn.utm.model.entity.Uav;
@@ -117,7 +117,7 @@ public class FlightPlanServiceImpl implements FlightPlanService {
                 flightPlanRepository.save(modifiedFlightPlan);
             } else {
                 throw new InvalidRequestException(String.valueOf(originalFlightPlan.getId()), "id",
-                        FormValidationMessage.PLAN_HAS_BEEN_STARTED_CANNOT_MODIFIED);
+                        ValidationMessage.PLAN_HAS_BEEN_STARTED_CANNOT_MODIFIED);
             }
         });
         return modifiedFlightPlan;
