@@ -49,7 +49,7 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     public FlightPlan applyFlightPlan(FlightPlanApplicationForm flightPlanApplicationForm) {
         flightPlanFeasibilityValidator.validateFeasibility(flightPlanApplicationForm);
 
-        Uav uav = uavRepository.findByMacAddress(flightPlanApplicationForm.getMacAddress());
+        Uav confirmedUav = confirmUavIsExists(flightPlanApplicationForm.getMacAddress());
         Date executionDate = DateTimeUtils.convertToDate(flightPlanApplicationForm.getExecutionDate());
         Date startTime = DateTimeUtils.convertToTime(flightPlanApplicationForm.getStartTime());
         Date endTime = DateTimeUtils.convertToTime(flightPlanApplicationForm.getEndTime());
@@ -61,25 +61,39 @@ public class FlightPlanServiceImpl implements FlightPlanService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        FlightPlan flightPlan = new FlightPlan(uav, executionDate, startTime,
+        FlightPlan flightPlan = new FlightPlan(confirmedUav, executionDate, startTime,
                 endTime, expectedFlyingAltitude, planWayPoints, description);
         return flightPlanRepository.save(flightPlan);
     }
 
     @Override
     public List<FlightPlan> getAllFlightPlansByDate(String pilotAccount, String date) {
-        Pilot pilot = pilotRepository.findByAccount(pilotAccount);
-        return flightPlanRepository.findAllByUavPilotAndExecutionDateEquals(pilot, DateTimeUtils.convertToDate(date));
+        Pilot confirmedPilot = confirmPilotIsExists(pilotAccount);
+        return flightPlanRepository.findAllByUavPilotAndExecutionDateEquals(confirmedPilot, DateTimeUtils.convertToDate(date));
     }
 
     @Override
     public FlightPlan getFlightPlanByPlanId(String pilotAccount, String date, long planId) {
-        Pilot pilot = pilotRepository.findByAccount(pilotAccount);
-        Optional<FlightPlan> flightPlan = flightPlanRepository.findByUavPilotAndExecutionDateAndId(pilot, DateTimeUtils.convertToDate(date), planId);
+        Pilot confirmedPilot = confirmPilotIsExists(pilotAccount);
+        Optional<FlightPlan> flightPlan = flightPlanRepository.findByUavPilotAndExecutionDateAndId(confirmedPilot, DateTimeUtils.convertToDate(date), planId);
         if (!flightPlan.isPresent()) {
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_FLIGHT_PLAN);
         }
         return flightPlan.get();
+    }
+
+    private Pilot confirmPilotIsExists(String pilotAccount){
+        Pilot pilot = pilotRepository.findByAccount(pilotAccount);
+        if (!Optional.ofNullable(pilot).isPresent())
+            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT);
+        return pilot;
+    }
+
+    private Uav confirmUavIsExists(String macAddress){
+        Uav uav = uavRepository.findByMacAddress(macAddress);
+        if (!Optional.ofNullable(uav).isPresent())
+            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV);
+        return uav;
     }
 
     @Override
