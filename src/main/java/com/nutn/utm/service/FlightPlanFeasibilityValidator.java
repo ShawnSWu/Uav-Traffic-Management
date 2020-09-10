@@ -3,12 +3,16 @@ package com.nutn.utm.service;
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
+import com.nutn.utm.model.entity.FlightPlan;
+import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.utility.DateTimeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -16,33 +20,50 @@ import java.time.LocalTime;
 @Component
 public class FlightPlanFeasibilityValidator {
 
-    public void validateFeasibility(FlightPlanApplicationForm planFormDTO) {
-        if (!isBefore1Hour(planFormDTO)) {
-            throw new InvalidRequestException(planFormDTO.getStartTime(), "expectedStartTime",
+    @Autowired
+    UavService uavService;
+
+    @Autowired
+    FlightPlanService flightPlanService;
+
+    public void validateFeasibility(FlightPlanApplicationForm planFormDto) {
+        String executionDate = planFormDto.getExecutionDate();
+        String startTime = planFormDto.getStartTime();
+        String endTime = planFormDto.getEndTime();
+
+        if (!isEndTimeLaterThanStartTime(startTime, endTime)) {
+            throw new InvalidRequestException(startTime, "endTime",
+                    ValidationMessage.EXPECTED_TAKEOFF_TIME_LATER_THAN_ARRIVAL_TIME_MESSAGE);
+        }
+        if (!isBefore1Hour(executionDate, startTime)) {
+            throw new InvalidRequestException(startTime, "startTime",
                     ValidationMessage.EXPECTED_TAKEOFF_TIME_NOT_BEFORE_1Hour_MESSAGE);
         }
-        if (!isArrivalTimeLaterThanTakeoffTime(planFormDTO)) {
-            throw new InvalidRequestException(planFormDTO.getStartTime(), "expectedEndTime",
-                    ValidationMessage.EXPECTED_TAKEOFF_TIME_LATER_THAN_ARRIVAL_TIME_MESSAGE);
+
+        FlightPlan existingPlan = getTimeConflictFlightPlanIfExist(planFormDto.getMacAddress(), executionDate, startTime, endTime);
+        if (Optional.ofNullable(existingPlan).isPresent()) {
+            throw new InvalidRequestException(startTime, "startTime",
+                    String.format(ValidationMessage.PLAN_TIME_CONFLICT, existingPlan.getStartTime(), existingPlan.getEndTime()));
         }
     }
 
+    private FlightPlan getTimeConflictFlightPlanIfExist(String macAddress, String date, String startTime, String endTime) {
+        Uav confirmUav = uavService.getUavIfExists(macAddress);
+        return flightPlanService.getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(confirmUav, endTime, startTime, date);
+    }
 
-    private boolean isBefore1Hour(FlightPlanApplicationForm planFormDTO) {
-        String date = planFormDTO.getExecutionDate();
-        String time = planFormDTO.getStartTime();
-        LocalDateTime executeTaskTime = DateTimeUtils.combineIntoToLocalDateTime(date, time);
+
+    private boolean isBefore1Hour(String date, String time) {
+        LocalDateTime executePlanTime = DateTimeUtils.combineIntoToLocalDateTime(date, time);
         LocalDateTime nowTime = DateTimeUtils.getCurrentLocalDateTime();
-        if (executeTaskTime.isAfter(nowTime)) {
-            Duration timeDifference = Duration.between(nowTime, executeTaskTime);
+        if (executePlanTime.isAfter(nowTime)) {
+            Duration timeDifference = Duration.between(nowTime, executePlanTime);
             return timeDifference.toMinutes() >= 60;
         }
         return false;
     }
 
-    private boolean isArrivalTimeLaterThanTakeoffTime(FlightPlanApplicationForm planFormDTO) {
-        String endTime = planFormDTO.getEndTime();
-        String startTime = planFormDTO.getStartTime();
+    private boolean isEndTimeLaterThanStartTime(String startTime, String endTime) {
         LocalTime takeoffTime = DateTimeUtils.convertToLocalTime(startTime);
         LocalTime arrivalsTime = DateTimeUtils.convertToLocalTime(endTime);
         return arrivalsTime.isAfter(takeoffTime);

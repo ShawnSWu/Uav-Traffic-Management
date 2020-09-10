@@ -86,7 +86,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     private Optional<FlightPlan> findFlightPlanBelongToUavRawData(String macAddress, String date, String time) {
         FlightPlan belongToUavRawDataFlightPlan;
         if (!proceedingFlightPlanCache.containsKey(macAddress)) {
-            belongToUavRawDataFlightPlan = flightPlanService.findFlightPlanBelongToUavRawData(macAddress, date, time);
+            belongToUavRawDataFlightPlan = flightPlanService.getFlightPlanBelongToUavRawData(macAddress, date, time);
             if (Optional.ofNullable(belongToUavRawDataFlightPlan).isPresent())
                 proceedingFlightPlanCache.put(macAddress, belongToUavRawDataFlightPlan);
         } else {

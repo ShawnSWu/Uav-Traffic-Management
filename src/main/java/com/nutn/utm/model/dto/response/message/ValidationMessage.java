@@ -5,8 +5,6 @@ package com.nutn.utm.model.dto.response.message;
  */
 public interface ValidationMessage {
 
-
-
     String MAY_NOT_BE_EMPTY = "Can not be empty.";
     String MAY_NOT_BE_NULL = "Can not be null.";
 
@@ -17,4 +15,7 @@ public interface ValidationMessage {
     String FLIGHT_HEIGHT_BELOW_60_METERS = "Flight height not allows below 60 meters.";
 
     String PLAN_HAS_BEEN_STARTED_CANNOT_MODIFIED = "The FlightPlan has started and cannot be modified.";
+
+    String PLAN_TIME_CONFLICT = "This UAV will be proceeding another flight plan at %s to %s, Please choose another time.";
+
 }

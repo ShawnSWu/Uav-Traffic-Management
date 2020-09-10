@@ -1,11 +1,18 @@
 package com.nutn.utm.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 @Entity(name = "pilot")
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pilot {
 
     @Id
@@ -25,44 +32,4 @@ public class Pilot {
 
     private String institution;
 
-    public Pilot(long id, String account, String hashedPassword, String name, String phoneNumber, String email, String institution) {
-        this.id = id;
-        this.account = account;
-        this.hashedPassword = hashedPassword;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.institution = institution;
-    }
-
-    public Pilot() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public String getHashedPassword() {
-        return hashedPassword;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getInstitution() {
-        return institution;
-    }
 }
