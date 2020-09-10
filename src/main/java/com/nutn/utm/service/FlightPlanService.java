@@ -2,6 +2,7 @@ package com.nutn.utm.service;
 
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.entity.FlightPlan;
+import com.nutn.utm.model.entity.Uav;
 
 import java.util.List;
 
@@ -17,7 +18,9 @@ public interface FlightPlanService {
 
     FlightPlan getFlightPlanByPlanId(String pilotAccount, String date, long planId);
 
-    FlightPlan findFlightPlanBelongToUavRawData(String macAddress, String date, String time);
+    FlightPlan getFlightPlanBelongToUavRawData(String macAddress, String date, String time);
+
+    FlightPlan getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date);
 
     void deleteFlightPlan(long planId);
 

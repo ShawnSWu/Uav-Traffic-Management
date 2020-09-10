@@ -11,8 +11,6 @@ import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Pilot;
 import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.repository.FlightPlanRepository;
-import com.nutn.utm.repository.PilotRepository;
-import com.nutn.utm.repository.UavRepository;
 import com.nutn.utm.utility.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,10 +32,10 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     FlightPlanRepository flightPlanRepository;
 
     @Autowired
-    UavRepository uavRepository;
+    PilotService pilotService;
 
     @Autowired
-    PilotRepository pilotRepository;
+    UavService uavService;
 
     @Autowired
     FlightPlanFeasibilityValidator flightPlanFeasibilityValidator;
@@ -49,7 +47,7 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     public FlightPlan applyFlightPlan(FlightPlanApplicationForm flightPlanApplicationForm) {
         flightPlanFeasibilityValidator.validateFeasibility(flightPlanApplicationForm);
 
-        Uav confirmedUav = confirmUavIsExists(flightPlanApplicationForm.getMacAddress());
+        Uav confirmedUav = uavService.getUavIfExists(flightPlanApplicationForm.getMacAddress());
         Date executionDate = DateTimeUtils.convertToDate(flightPlanApplicationForm.getExecutionDate());
         Date startTime = DateTimeUtils.convertToTime(flightPlanApplicationForm.getStartTime());
         Date endTime = DateTimeUtils.convertToTime(flightPlanApplicationForm.getEndTime());
@@ -75,13 +73,13 @@ public class FlightPlanServiceImpl implements FlightPlanService {
 
     @Override
     public List<FlightPlan> getAllFlightPlansByDate(String pilotAccount, String date) {
-        Pilot confirmedPilot = confirmPilotIsExists(pilotAccount);
+        Pilot confirmedPilot = pilotService.getPilotIfExists(pilotAccount);
         return flightPlanRepository.findAllByUavPilotAndExecutionDateEquals(confirmedPilot, DateTimeUtils.convertToDate(date));
     }
 
     @Override
     public FlightPlan getFlightPlanByPlanId(String pilotAccount, String date, long planId) {
-        Pilot confirmedPilot = confirmPilotIsExists(pilotAccount);
+        Pilot confirmedPilot = pilotService.getPilotIfExists(pilotAccount);
         Optional<FlightPlan> flightPlan = flightPlanRepository.findByUavPilotAndExecutionDateAndId(confirmedPilot, DateTimeUtils.convertToDate(date), planId);
         if (!flightPlan.isPresent()) {
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_FLIGHT_PLAN);
@@ -90,24 +88,16 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     }
 
     @Override
-    public FlightPlan findFlightPlanBelongToUavRawData(String macAddress, String date, String time) {
-        Uav confirmedUav = confirmUavIsExists(macAddress);
+    public FlightPlan getFlightPlanBelongToUavRawData(String macAddress, String date, String time) {
+        Uav confirmedUav = uavService.getUavIfExists(macAddress);
         Optional<FlightPlan> flightPlans = flightPlanRepository.findByMacAddressAndExecutionDateAndBetweenStartAndEndTime(confirmedUav, DateTimeUtils.convertToDate(date), DateTimeUtils.convertToTime(time));
         return flightPlans.orElse(null);
     }
 
-    private Pilot confirmPilotIsExists(String pilotAccount){
-        Pilot pilot = pilotRepository.findByAccount(pilotAccount);
-        if (!Optional.ofNullable(pilot).isPresent())
-            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT);
-        return pilot;
-    }
-
-    private Uav confirmUavIsExists(String macAddress){
-        Uav uav = uavRepository.findByMacAddress(macAddress);
-        if (!Optional.ofNullable(uav).isPresent())
-            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV);
-        return uav;
+    @Override
+    public FlightPlan getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date) {
+        return flightPlanRepository.findByUavAndExecutionDateEqualsAndEndTimeGreaterThanEqualAndStartTimeLessThanEqual(
+                uav,DateTimeUtils.convertToDate(date), DateTimeUtils.convertToTime(endTime), DateTimeUtils.convertToTime(startTime));
     }
 
     @Override
@@ -124,7 +114,7 @@ public class FlightPlanServiceImpl implements FlightPlanService {
                 modifiedFlightPlan.setId(originalFlightPlan.getId());
 
                 if (isUavHasBeenModified(modifiedFlightPlanForm, originalFlightPlan)) {
-                    Uav uav = uavRepository.findByMacAddress(modifiedFlightPlanForm.getMacAddress());
+                    Uav uav = uavService.getUavIfExists(modifiedFlightPlanForm.getMacAddress());
                     modifiedFlightPlan.setUav(uav);
                 } else {
                     modifiedFlightPlan.setUav(originalFlightPlan.getUav());
