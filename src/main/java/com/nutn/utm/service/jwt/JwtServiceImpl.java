@@ -30,7 +30,6 @@ public class JwtServiceImpl implements JwtService{
     final static String secret = resource.getString("jwt.secret");
     static final long expirationTime1Day = 86400000;
     public final static String PILOT_ACCOUNT = "pilotAccount";
-    final static String ROLE = "role";
 
     public String createToken(Pilot pilot) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
@@ -53,12 +52,12 @@ public class JwtServiceImpl implements JwtService{
     }
 
     public String extractClaim(String token, String claimKey) {
-        return (String) Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(secret)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get(claimKey);
+                .get(claimKey).toString();
     }
 
     public JwtAuthResponseDto validateToken(String token) {
@@ -83,8 +82,6 @@ public class JwtServiceImpl implements JwtService{
 
     public Authentication getAuthentication(String token) {
         String pilotAccount = extractClaim(token, PILOT_ACCOUNT);
-        List<GrantedAuthority> role =
-                AuthorityUtils.commaSeparatedStringToAuthorityList(extractClaim(token, ROLE));
-        return new UsernamePasswordAuthenticationToken(pilotAccount, null, role);
+        return new UsernamePasswordAuthenticationToken(pilotAccount, null, null);
     }
 }

@@ -8,7 +8,7 @@ values (2201, 1450, '0000000018021025', 4, 'Black', 'pixhawks', 1101);
 
 
 insert into flight_plan(id,  execution_date, start_time, max_flying_altitude, end_time, flight_plan_waypoints, description, uav)
-values (3301, '2020-09-07', '20:00:00', 20, '23:00:00',
+values (3301, '2020-09-10', '14:00:00', 20, '23:00:00',
 '{
     "coordinate": [
             [
@@ -40,10 +40,10 @@ values (3301, '2020-09-07', '20:00:00', 20, '23:00:00',
               22.617386
             ]
           ]
-        }', 'ShawnWu first flight', 2201);
+        }', 'ShawnWu~~~ first flight', 2201);
 
 insert into flight_plan(id,  execution_date, start_time, max_flying_altitude, end_time, flight_plan_waypoints, description, uav)
-values (3302, '2020-09-07', '21:00:00', 20, '23:10:00',
+values (3302, '2020-09-10', '21:00:00', 20, '23:10:00',
 '{
     "coordinate": [
             [

@@ -17,6 +17,8 @@ public interface FlightPlanService {
 
     FlightPlan getFlightPlanByPlanId(String pilotAccount, String date, long planId);
 
+    FlightPlan findFlightPlanBelongToUavRawData(String macAddress, String date, String time);
+
     void deleteFlightPlan(long planId);
 
     FlightPlan modifyFlightPlan(long planId, FlightPlanApplicationForm flightPlanApplicationForm);
