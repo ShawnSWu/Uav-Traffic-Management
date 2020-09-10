@@ -2,7 +2,9 @@ package com.nutn.utm.repository;
 
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Pilot;
+import com.nutn.utm.model.entity.Uav;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -20,4 +22,6 @@ public interface FlightPlanRepository extends JpaRepository<FlightPlan, Long> {
 
     Optional<FlightPlan> findByUavPilotAndExecutionDateAndId(Pilot pilot, Date date, long id);
 
+    @Query("from flight_plan where uav =?1 and executionDate=?2 and startTime <= ?3 and endTime >= ?3")
+    Optional<FlightPlan> findByMacAddressAndExecutionDateAndBetweenStartAndEndTime(Uav uav, Date date, Date time);
 }

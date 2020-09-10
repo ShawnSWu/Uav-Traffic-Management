@@ -1,5 +1,10 @@
 package com.nutn.utm.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -7,6 +12,10 @@ import java.util.Date;
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 @Entity(name = "trajectory_point")
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TrajectoryPoint {
 
     @Id
@@ -30,91 +39,36 @@ public class TrajectoryPoint {
 
     private double pitch;
 
+    @Column(name = "gyro_x")
     private double gyroX;
 
+    @Column(name = "gyro_y")
     private double gyroY;
 
+    @Column(name = "gyro_z")
     private double gyroZ;
 
-    private double volt;
+    @Column(name = "acc_x")
+    private double accX;
 
-    private double hex_data_packet;
+    @Column(name = "acc_y")
+    private double accY;
 
-    public TrajectoryPoint(long id, Date date, Date time, double latitude, double longitude, double altitude,
-                           double yaw, double roll, double pitch, double gyroX, double gyroY, double gyroZ,
-                           double volt, double hex_data_packet) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.altitude = altitude;
-        this.yaw = yaw;
-        this.roll = roll;
-        this.pitch = pitch;
-        this.gyroX = gyroX;
-        this.gyroY = gyroY;
-        this.gyroZ = gyroZ;
-        this.volt = volt;
-        this.hex_data_packet = hex_data_packet;
-    }
+    @Column(name = "acc_z")
+    private double accZ;
 
-    public TrajectoryPoint() {
-    }
+    @Column(name = "ned_north")
+    private double nedNorth;
 
-    public long getId() {
-        return id;
-    }
+    @Column(name = "ned_east")
+    private double nedEast;
 
-    public Date getDate() {
-        return date;
-    }
+    @Column(name = "ned_down")
+    private double nedDown;
 
-    public Date getTime() {
-        return time;
-    }
+    @ManyToOne
+    @JoinColumn(name = "flight_plan", referencedColumnName = "id")
+    private FlightPlan flightPlan;
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public double getAltitude() {
-        return altitude;
-    }
-
-    public double getYaw() {
-        return yaw;
-    }
-
-    public double getRoll() {
-        return roll;
-    }
-
-    public double getPitch() {
-        return pitch;
-    }
-
-    public double getGyroX() {
-        return gyroX;
-    }
-
-    public double getGyroY() {
-        return gyroY;
-    }
-
-    public double getGyroZ() {
-        return gyroZ;
-    }
-
-    public double getVolt() {
-        return volt;
-    }
-
-    public double getHex_data_packet() {
-        return hex_data_packet;
-    }
+    private String hex_data_packet;
 }

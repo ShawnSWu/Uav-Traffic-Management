@@ -61,8 +61,15 @@ public class FlightPlanServiceImpl implements FlightPlanService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        FlightPlan flightPlan = new FlightPlan(confirmedUav, executionDate, startTime,
-                endTime, expectedFlyingAltitude, planWayPoints, description);
+        FlightPlan flightPlan = FlightPlan.builder()
+                .uav(confirmedUav)
+                .executionDate(executionDate)
+                .startTime(startTime)
+                .endTime(endTime)
+                .maxFlyingAltitude(expectedFlyingAltitude)
+                .flightPlanWayPoints(planWayPoints)
+                .description(description)
+                .build();
         return flightPlanRepository.save(flightPlan);
     }
 
@@ -80,6 +87,13 @@ public class FlightPlanServiceImpl implements FlightPlanService {
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_FLIGHT_PLAN);
         }
         return flightPlan.get();
+    }
+
+    @Override
+    public FlightPlan findFlightPlanBelongToUavRawData(String macAddress, String date, String time) {
+        Uav confirmedUav = confirmUavIsExists(macAddress);
+        Optional<FlightPlan> flightPlans = flightPlanRepository.findByMacAddressAndExecutionDateAndBetweenStartAndEndTime(confirmedUav, DateTimeUtils.convertToDate(date), DateTimeUtils.convertToTime(time));
+        return flightPlans.orElse(null);
     }
 
     private Pilot confirmPilotIsExists(String pilotAccount){

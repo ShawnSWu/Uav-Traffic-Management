@@ -1,5 +1,6 @@
 package com.nutn.utm.model.entity;
 
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -9,6 +10,11 @@ import java.util.Date;
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 @Entity(name = "flight_plan")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlightPlan {
 
     @Id
@@ -40,82 +46,4 @@ public class FlightPlan {
 
     private String description;
 
-    public FlightPlan(Uav uav, Date executionDate, Date startTime, Date endTime,
-                      int maxFlyingAltitude, String flightPlanWaypoints, String description) {
-        this.uav = uav;
-        this.executionDate = executionDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.maxFlyingAltitude = maxFlyingAltitude;
-        this.flightPlanWayPoints = flightPlanWaypoints;
-        this.description = description;
-    }
-
-    public FlightPlan() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-
-    public Uav getUav() {
-        return uav;
-    }
-
-    public Date getExecutionDate() {
-        return executionDate;
-    }
-
-    public String getFlightPlanWayPoints() {
-        return flightPlanWayPoints;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public int getMaxFlyingAltitude() {
-        return maxFlyingAltitude;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setUav(Uav uav) {
-        this.uav = uav;
-    }
-
-    public void setExecutionDate(Date executionDate) {
-        this.executionDate = executionDate;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setMaxFlyingAltitude(int maxFlyingAltitude) {
-        this.maxFlyingAltitude = maxFlyingAltitude;
-    }
-
-    public void setFlightPlanWayPoints(String flightPlanWayPoints) {
-        this.flightPlanWayPoints = flightPlanWayPoints;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 }

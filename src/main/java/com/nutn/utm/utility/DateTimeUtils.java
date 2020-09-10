@@ -15,6 +15,10 @@ public class DateTimeUtils {
         return LocalDateTime.now();
     }
 
+    public static LocalTime getCurrentLocalTime() {
+        return LocalTime.now();
+    }
+
     public static Date convertToDate(String date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date d = null;
@@ -51,6 +55,10 @@ public class DateTimeUtils {
         return LocalTime.from(DateTimeFormatter.ISO_LOCAL_TIME.parse(time));
     }
 
+    public static LocalTime convertToLocalTime(Date time) {
+        Instant instant = Instant.ofEpochMilli(time.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime();
+    }
 
     public static LocalDateTime combineIntoToLocalDateTime(String date, String time) {
         LocalDate localDate = LocalDate.parse(date);
