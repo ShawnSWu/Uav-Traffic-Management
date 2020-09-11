@@ -72,14 +72,14 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     }
 
     @Override
-    public List<FlightPlan> getAllFlightPlansByDate(String pilotAccount, String date) {
-        Pilot confirmedPilot = pilotService.getPilotIfExists(pilotAccount);
+    public List<FlightPlan> getAllFlightPlansByDate(long accountId, String date) {
+        Pilot confirmedPilot = pilotService.getPilotIfExists(accountId);
         return flightPlanRepository.findAllByUavPilotAndExecutionDateEquals(confirmedPilot, DateTimeUtils.convertToDate(date));
     }
 
     @Override
-    public FlightPlan getFlightPlanByPlanId(String pilotAccount, String date, long planId) {
-        Pilot confirmedPilot = pilotService.getPilotIfExists(pilotAccount);
+    public FlightPlan getFlightPlanByPlanId(long accountId, String date, long planId) {
+        Pilot confirmedPilot = pilotService.getPilotIfExists(accountId);
         Optional<FlightPlan> flightPlan = flightPlanRepository.findByUavPilotAndExecutionDateAndId(confirmedPilot, DateTimeUtils.convertToDate(date), planId);
         if (!flightPlan.isPresent()) {
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_FLIGHT_PLAN);

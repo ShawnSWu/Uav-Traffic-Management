@@ -107,12 +107,12 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
 
 
     @Override
-    public List<FlightPlan> getProceedingAndExpireFlightPlansByDate(String pilotAccount, String date) {
+    public List<FlightPlan> getProceedingAndExpireFlightPlansByDate(long accountId, String date) {
         return null;
     }
 
     @Override
-    public List<TrajectoryPoint> getProceedingAndExpireFlightTrajectoryByDate(String pilotAccount, String date) {
+    public List<TrajectoryPoint> getProceedingAndExpireFlightTrajectoryByDate(long accountId, String date) {
 
         return null;
     }

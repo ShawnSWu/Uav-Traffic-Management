@@ -31,15 +31,15 @@ public class FlightPlanController {
     @Autowired
     FlightPlanService flightPlanService;
 
-    @GetMapping("/{pilotAccount}/{date}")
-    public FlightPlanFeatureCollectionDto getAllFlightPlansByDate(@PathVariable String pilotAccount, @PathVariable String date) {
-        List<FlightPlan> flightPlans = flightPlanService.getAllFlightPlansByDate(pilotAccount, date);
+    @GetMapping("/accounts/{accountId}/date/{date}")
+    public FlightPlanFeatureCollectionDto getAllFlightPlansByDate(@PathVariable int accountId, @PathVariable String date) {
+        List<FlightPlan> flightPlans = flightPlanService.getAllFlightPlansByDate(accountId, date);
         return geoJsonConverter.convertFlightPlansToFeatureCollection(flightPlans);
     }
 
-    @GetMapping("/{pilotAccount}/{date}/{planId}")
-    public FlightPlanFeatureDto getFlightPlanByDateAndId(@PathVariable String pilotAccount, @PathVariable String date, @PathVariable long planId) {
-        FlightPlan flightPlans = flightPlanService.getFlightPlanByPlanId(pilotAccount, date, planId);
+    @GetMapping("/accounts/{accountId}/date/{date}/planId/{planId}")
+    public FlightPlanFeatureDto getFlightPlanByDateAndId(@PathVariable int accountId, @PathVariable String date, @PathVariable long planId) {
+        FlightPlan flightPlans = flightPlanService.getFlightPlanByPlanId(accountId, date, planId);
         return geoJsonConverter.convertFlightPlanToFeature(flightPlans);
     }
 
@@ -50,13 +50,13 @@ public class FlightPlanController {
         return ResponseEntity.ok(new FlightPlanApplicationResponseDto(flightPlanService.applyFlightPlan(planApplicationForm)));
     }
 
-    @PutMapping("/{planId}")
+    @PutMapping("/id/{planId}")
     public ResponseEntity<FlightPlanApplicationResponseDto> modifyFlightPlan(@RequestBody FlightPlanApplicationForm modifiedPlanForm, @PathVariable long planId) {
         FlightPlan modifiedFlightPlan = flightPlanService.modifyFlightPlan(planId, modifiedPlanForm);
         return ResponseEntity.ok(new FlightPlanApplicationResponseDto(modifiedFlightPlan));
     }
 
-    @DeleteMapping("/{planId}")
+    @DeleteMapping("/id/{planId}")
     public ResponseEntity<Long> deleteFlightPlan(@PathVariable long planId) {
         flightPlanService.deleteFlightPlan(planId);
         return ResponseEntity.ok(planId);

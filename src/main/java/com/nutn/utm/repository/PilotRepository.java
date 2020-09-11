@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PilotRepository extends JpaRepository<Pilot, Long> {
 
-    Pilot findByAccount(String pilotAccount);
+    Pilot findById(long accountId);
+
+    Pilot findByAccount(String account);
 }

@@ -9,14 +9,11 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -28,15 +25,15 @@ public class JwtServiceImpl implements JwtService{
 
     final static ResourceBundle resource = ResourceBundle.getBundle("secret");
     final static String secret = resource.getString("jwt.secret");
-    static final long expirationTime1Day = 86400000;
+    static final long expirationTime = 86400000;//millisecond, 1 Day.
     public final static String PILOT_ACCOUNT = "pilotAccount";
 
     public String createToken(Pilot pilot) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .claim(PILOT_ACCOUNT, pilot)
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime1Day * 3))
+                .claim(PILOT_ACCOUNT, pilot.getAccount())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nutn.utm.model.dto.form.validations.annotations.MinCoordinateCount;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -12,11 +16,15 @@ import javax.validation.constraints.NotNull;
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlightPlanApplicationForm {
 
     @NotBlank(message = ValidationMessage.MAY_NOT_BE_EMPTY)
-    @JsonProperty("pilotAccount")
-    private String pilotAccount;
+    @JsonProperty("accountId")
+    private long accountId;
 
     @NotBlank(message = ValidationMessage.MAY_NOT_BE_EMPTY)
     @JsonProperty("macAddress")
@@ -42,42 +50,10 @@ public class FlightPlanApplicationForm {
     @NotNull(message = ValidationMessage.MAY_NOT_BE_NULL)
     @JsonProperty("flightPlanWayPoints")
     @MinCoordinateCount(count = 2)
-    private FlightPlanWayPointsDto flightPlanWayPointsDTO;
+    private FlightPlanWayPointsDto flightPlanWayPointsDto;
 
     @NotBlank(message = ValidationMessage.MAY_NOT_BE_EMPTY)
     @JsonProperty("description")
     private String description;
 
-
-    public String getPilotAccount() {
-        return pilotAccount;
-    }
-
-    public String getMacAddress() {
-        return macAddress;
-    }
-
-    public String getExecutionDate() {
-        return executionDate;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public Integer getMaxFlyingAltitude() {
-        return maxFlyingAltitude;
-    }
-
-    public FlightPlanWayPointsDto getFlightPlanWayPointsDto() {
-        return flightPlanWayPointsDTO;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }
