@@ -7,5 +7,7 @@ import com.nutn.utm.model.entity.Pilot;
  */
 public interface PilotService {
 
-    Pilot getPilotIfExists(String pilotAccount);
+    Pilot getPilotIfExists(long accountId);
+
+    Pilot getPilotByAccount(String account);
 }

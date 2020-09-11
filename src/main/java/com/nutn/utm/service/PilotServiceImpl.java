@@ -19,8 +19,16 @@ public class PilotServiceImpl implements PilotService {
     PilotRepository pilotRepository;
 
     @Override
-    public Pilot getPilotIfExists(String pilotAccount){
-        Pilot pilot = pilotRepository.findByAccount(pilotAccount);
+    public Pilot getPilotIfExists(long accountId){
+        Pilot pilot = pilotRepository.findById(accountId);
+        if (!Optional.ofNullable(pilot).isPresent())
+            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT);
+        return pilot;
+    }
+
+    @Override
+    public Pilot getPilotByAccount(String account) {
+        Pilot pilot = pilotRepository.findByAccount(account);
         if (!Optional.ofNullable(pilot).isPresent())
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT);
         return pilot;

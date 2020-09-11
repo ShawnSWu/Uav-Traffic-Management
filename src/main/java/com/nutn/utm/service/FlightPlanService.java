@@ -14,9 +14,9 @@ public interface FlightPlanService {
 
     FlightPlan applyFlightPlan(FlightPlanApplicationForm flightPlanApplicationForm);
 
-    List<FlightPlan> getAllFlightPlansByDate(String pilotAccount, String date);
+    List<FlightPlan> getAllFlightPlansByDate(long accountId, String date);
 
-    FlightPlan getFlightPlanByPlanId(String pilotAccount, String date, long planId);
+    FlightPlan getFlightPlanByPlanId(long accountId, String date, long planId);
 
     FlightPlan getFlightPlanBelongToUavRawData(String macAddress, String date, String time);
 
