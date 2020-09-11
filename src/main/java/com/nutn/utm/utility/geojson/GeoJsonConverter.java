@@ -1,11 +1,16 @@
 package com.nutn.utm.utility.geojson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
+import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeatureCollection;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.utility.DateTimeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +20,11 @@ import java.util.Properties;
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
+@Component
 public class GeoJsonConverter {
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     public FlightPlanFeatureCollectionDto convertFlightPlansToFeatureCollection(List<FlightPlan> flightPlans){
         FeatureCollectionBuilder featureCollectionBuilder = GeoJsonTool.buildFeatureCollection();
@@ -67,5 +76,15 @@ public class GeoJsonConverter {
         properties.setProperty("startPoint", startAndEndPoint.get(0));
         properties.setProperty("endPoint", startAndEndPoint.get(1));
         return properties;
+    }
+
+    public GeographyLimitAreaFeatureCollection convertAreaToGeographyCollection(byte[] area){
+        GeographyLimitAreaFeatureCollection geographyLimitAreaFeatureCollection = null;
+        try {
+            geographyLimitAreaFeatureCollection = objectMapper.readValue(area, GeographyLimitAreaFeatureCollection.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return geographyLimitAreaFeatureCollection;
     }
 }

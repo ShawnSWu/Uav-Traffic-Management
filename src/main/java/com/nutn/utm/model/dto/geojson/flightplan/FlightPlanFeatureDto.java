@@ -1,10 +1,13 @@
 package com.nutn.utm.model.dto.geojson.flightplan;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
+
+@Getter
 @JsonPropertyOrder({
         "type",
         "geometry",

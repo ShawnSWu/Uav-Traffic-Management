@@ -26,7 +26,8 @@ import java.util.List;
 @RequestMapping("/flightPlan")
 public class FlightPlanController {
 
-    GeoJsonConverter geoJsonConverter = new GeoJsonConverter();
+    @Autowired
+    GeoJsonConverter geoJsonConverter;
 
     @Autowired
     FlightPlanService flightPlanService;
