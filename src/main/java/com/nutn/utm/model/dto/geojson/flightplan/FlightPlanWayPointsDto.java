@@ -1,12 +1,14 @@
 package com.nutn.utm.model.dto.geojson.flightplan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 import java.io.IOException;
 
+@Getter
 public class FlightPlanWayPointsDto {
 
     private double[][] coordinate;
@@ -26,9 +28,6 @@ public class FlightPlanWayPointsDto {
         }
     }
 
-    public double[][] getCoordinate() {
-        return coordinate;
-    }
 
 
 }

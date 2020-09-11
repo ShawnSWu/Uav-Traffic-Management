@@ -1,11 +1,14 @@
 package com.nutn.utm.model.dto.geojson.flightplan;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
+
 import java.util.List;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
+@Getter
 @JsonPropertyOrder({
         "type",
         "coordinates"
@@ -19,21 +22,5 @@ public class FlightPlanGeometryDto {
     public FlightPlanGeometryDto(String type, List<List<Double>> coordinates) {
         this.type = type;
         this.coordinates = coordinates;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setCoordinates(List<List<Double>> coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public List<List<Double>> getCoordinates() {
-        return coordinates;
     }
 }
