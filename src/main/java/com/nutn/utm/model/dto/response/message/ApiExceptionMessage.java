@@ -9,5 +9,5 @@ public interface ApiExceptionMessage {
 
     String NOT_FOUND_PILOT = "Not found pilot.";
 
-    String NOT_FOUND_UAV = "Not found uav.";
+    String NOT_FOUND_UAV = "This pilot does not own this uav, please confirm again";
 }

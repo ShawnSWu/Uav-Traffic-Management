@@ -26,4 +26,12 @@ public class UavServiceImpl implements UavService {
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV);
         return uav;
     }
+
+    @Override
+    public Uav checkIfPilotOwnsThisUav(long accountId, String macAddress) {
+        Uav uav = uavRepository.findByPilotIdAndMacAddress(accountId, macAddress);
+        if (!Optional.ofNullable(uav).isPresent())
+            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV);
+        return uav;
+    }
 }

@@ -10,6 +10,7 @@ import com.nutn.utm.service.FlightPlanService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,23 +33,26 @@ public class FlightPlanController {
     @Autowired
     FlightPlanService flightPlanService;
 
-    @GetMapping("/accounts/{accountId}/date/{date}")
-    public FlightPlanFeatureCollectionDto getAllFlightPlansByDate(@PathVariable int accountId, @PathVariable String date) {
+    @GetMapping("/date/{date}")
+    public FlightPlanFeatureCollectionDto getAllFlightPlansByDate(Authentication authentication, @PathVariable String date) {
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
         List<FlightPlan> flightPlans = flightPlanService.getAllFlightPlansByDate(accountId, date);
         return geoJsonConverter.convertFlightPlansToFeatureCollection(flightPlans);
     }
 
-    @GetMapping("/accounts/{accountId}/date/{date}/planId/{planId}")
-    public FlightPlanFeatureDto getFlightPlanByDateAndId(@PathVariable int accountId, @PathVariable String date, @PathVariable long planId) {
+    @GetMapping("/date/{date}/planId/{planId}")
+    public FlightPlanFeatureDto getFlightPlanByDateAndId(Authentication authentication, @PathVariable String date, @PathVariable long planId) {
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
         FlightPlan flightPlans = flightPlanService.getFlightPlanByPlanId(accountId, date, planId);
         return geoJsonConverter.convertFlightPlanToFeature(flightPlans);
     }
 
     @PostMapping
-    public ResponseEntity<FlightPlanApplicationResponseDto> applyFlightPlan(@Valid @RequestBody FlightPlanApplicationForm planApplicationForm, BindingResult formFormatValidateResult) {
+    public ResponseEntity<FlightPlanApplicationResponseDto> applyFlightPlan(Authentication authentication, @Valid @RequestBody FlightPlanApplicationForm planApplicationForm, BindingResult formFormatValidateResult) {
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
         if (formFormatValidateResult.hasErrors())
             throw new InvalidRequestException(formFormatValidateResult.getFieldErrors());
-        return ResponseEntity.ok(new FlightPlanApplicationResponseDto(flightPlanService.applyFlightPlan(planApplicationForm)));
+        return ResponseEntity.ok(new FlightPlanApplicationResponseDto(flightPlanService.applyFlightPlan(accountId, planApplicationForm)));
     }
 
     @PutMapping("/id/{planId}")
