@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -45,5 +46,9 @@ public class FlightPlan {
     private String flightPlanWayPoints;
 
     private String description;
+
+    @OneToMany
+    @JoinColumn(name = "flight_plan", referencedColumnName = "id")
+    private List<TrajectoryPoint> trajectoryPoint;
 
 }

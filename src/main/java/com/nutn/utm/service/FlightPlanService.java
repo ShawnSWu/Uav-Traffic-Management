@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface FlightPlanService {
 
-    FlightPlan applyFlightPlan(FlightPlanApplicationForm flightPlanApplicationForm);
+    FlightPlan applyFlightPlan(long accountId, FlightPlanApplicationForm flightPlanApplicationForm);
 
     List<FlightPlan> getAllFlightPlansByDate(long accountId, String date);
 

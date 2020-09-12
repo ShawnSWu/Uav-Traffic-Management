@@ -6,18 +6,19 @@ import com.nutn.utm.model.UavRawData;
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.TrajectoryPoint;
+import com.nutn.utm.repository.FlightPlanRepository;
 import com.nutn.utm.repository.TrajectoryPointRepository;
+import com.nutn.utm.service.mqtt.MqttMessagePublisher;
 import com.nutn.utm.utility.DateTimeUtils;
 import com.nutn.utm.utility.cayenne.CayenneLPPDataParser;
+import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -31,10 +32,53 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     private FlightPlanService flightPlanService;
 
     @Autowired
-    TrajectoryPointRepository trajectoryPointRepository;
+    private FlightPlanRepository flightPlanRepository;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private TrajectoryPointRepository trajectoryPointRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MqttMessagePublisher mqttMessagePublisher;
+
+    @Autowired
+    GeoJsonConverter geoJsonConverter;
+
+    @Override
+    public List<FlightPlan> getCurrentlyExecutingFlightPlans(long accountId) {
+        Date today = DateTimeUtils.getTodayDate();
+        Date currentTime = DateTimeUtils.getCurrentTime();
+        return flightPlanRepository.findAllByPilotIdAndExecutionDateAndBetweenStartAndEndTime(
+                accountId, today, currentTime);
+    }
+
+    @Override
+    public List<FlightPlan> getCurrentlyExecutedFlightPlans(long accountId) {
+        Date today = DateTimeUtils.getTodayDate();
+        Date currentTime = DateTimeUtils.getCurrentTime();
+        return flightPlanRepository.findAllByUavPilotIdAndExecutionDateAndEndTimeLessThanEqual(
+                accountId, today, currentTime);
+    }
+
+    @Override
+    public List<FlightPlan> getCurrentlyPrepareFlightPlans(long accountId) {
+        Date today = DateTimeUtils.getTodayDate();
+        Date currentTime = DateTimeUtils.getCurrentTime();
+        return flightPlanRepository.findAllByUavPilotIdAndExecutionDateAndStartTimeGreaterThan(
+                accountId, today, currentTime);
+    }
+
+    @Override
+    public List<TrajectoryPoint> getCurrentlyExecutingFlightTrajectory(long accountId) {
+        return null;
+    }
+
+    @Override
+    public List<TrajectoryPoint> getCurrentlyExecutedFlightTrajectory(long accountId) {
+        return null;
+    }
 
     @Override
     public void receiveMqttBrokerMessage(String message) {
@@ -106,16 +150,6 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     }
 
 
-    @Override
-    public List<FlightPlan> getProceedingAndExpireFlightPlansByDate(long accountId, String date) {
-        return null;
-    }
-
-    @Override
-    public List<TrajectoryPoint> getProceedingAndExpireFlightTrajectoryByDate(long accountId, String date) {
-
-        return null;
-    }
 
     @Override
     public void predictTrajectoryAndStability(List<TrajectoryPoint> trajectory) {

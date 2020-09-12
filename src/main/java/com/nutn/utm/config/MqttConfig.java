@@ -10,6 +10,7 @@ import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 
 import java.util.ResourceBundle;
@@ -26,7 +27,12 @@ public class MqttConfig {
     int qos = Integer.parseInt(properties.getString("mqtt.qos"));
 
     @Bean
-    public DirectChannel mqttInputChannel() {
+    public DirectChannel fromMqBrokerInputChannel() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    public DirectChannel toMqttBrokerOutputChannel() {
         return new DirectChannel();
     }
 
@@ -49,12 +55,20 @@ public class MqttConfig {
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(qos);
-        adapter.setOutputChannel(mqttInputChannel());
+        adapter.setOutputChannel(fromMqBrokerInputChannel());
         return adapter;
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "mqttInputChannel")
+    @ServiceActivator(inputChannel = "toMqttBrokerOutputChannel")
+    public MqttPahoMessageHandler mqttOutbound() {
+        MqttPahoMessageHandler handler = new MqttPahoMessageHandler(url, clientId, mqttClientFactory());
+        handler.setDefaultQos(qos);
+        return handler;
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "fromMqBrokerInputChannel")
     public NutnMqttBrokerMessageHandler mqttPahoMessageHandler() {
         return new NutnMqttBrokerMessageHandler();
     }

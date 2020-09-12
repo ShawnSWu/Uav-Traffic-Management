@@ -19,6 +19,22 @@ public class DateTimeUtils {
         return LocalTime.now();
     }
 
+    public static Date getCurrentTime(){
+        String time = DateTimeUtils.getCurrentLocalTime().format(DateTimeFormatter.ISO_LOCAL_TIME);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date t = null;
+        try {
+            t = dateFormat.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return t;
+    }
+
+    public static Date getTodayDate() {
+        return new Date();
+    }
+
     public static Date convertToDate(String date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date d = null;

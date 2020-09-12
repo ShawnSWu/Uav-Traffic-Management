@@ -29,25 +29,25 @@ import java.util.Optional;
 public class FlightPlanServiceImpl implements FlightPlanService {
 
     @Autowired
-    FlightPlanRepository flightPlanRepository;
+    private FlightPlanRepository flightPlanRepository;
 
     @Autowired
-    PilotService pilotService;
+    private PilotService pilotService;
 
     @Autowired
-    UavService uavService;
+    private UavService uavService;
 
     @Autowired
-    FlightPlanFeasibilityValidator flightPlanFeasibilityValidator;
+    private FlightPlanFeasibilityValidator flightPlanFeasibilityValidator;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Override
-    public FlightPlan applyFlightPlan(FlightPlanApplicationForm flightPlanApplicationForm) {
+    public FlightPlan applyFlightPlan(long accountId, FlightPlanApplicationForm flightPlanApplicationForm) {
         flightPlanFeasibilityValidator.validateFeasibility(flightPlanApplicationForm);
 
-        Uav confirmedUav = uavService.getUavIfExists(flightPlanApplicationForm.getMacAddress());
+        Uav confirmedUav = uavService.checkIfPilotOwnsThisUav(accountId, flightPlanApplicationForm.getMacAddress());
         Date executionDate = DateTimeUtils.convertToDate(flightPlanApplicationForm.getExecutionDate());
         Date startTime = DateTimeUtils.convertToTime(flightPlanApplicationForm.getStartTime());
         Date endTime = DateTimeUtils.convertToTime(flightPlanApplicationForm.getEndTime());
@@ -114,8 +114,8 @@ public class FlightPlanServiceImpl implements FlightPlanService {
                 modifiedFlightPlan.setId(originalFlightPlan.getId());
 
                 if (isUavHasBeenModified(modifiedFlightPlanForm, originalFlightPlan)) {
-                    Uav uav = uavService.getUavIfExists(modifiedFlightPlanForm.getMacAddress());
-                    modifiedFlightPlan.setUav(uav);
+                    Uav confirmedUav = uavService.checkIfPilotOwnsThisUav(originalFlightPlan.getId(), modifiedFlightPlanForm.getMacAddress());
+                    modifiedFlightPlan.setUav(confirmedUav);
                 } else {
                     modifiedFlightPlan.setUav(originalFlightPlan.getUav());
                 }

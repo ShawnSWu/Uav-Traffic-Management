@@ -11,9 +11,15 @@ import java.util.List;
  */
 public interface RealTimeMonitorUavService {
 
-    List<FlightPlan> getProceedingAndExpireFlightPlansByDate(long accountId, String date);
+    List<FlightPlan> getCurrentlyExecutingFlightPlans(long accountId);
 
-    List<TrajectoryPoint> getProceedingAndExpireFlightTrajectoryByDate(long accountId, String date);
+    List<FlightPlan> getCurrentlyExecutedFlightPlans(long accountId);
+
+    List<FlightPlan> getCurrentlyPrepareFlightPlans(long accountId);
+
+    List<TrajectoryPoint> getCurrentlyExecutingFlightTrajectory(long accountId);
+
+    List<TrajectoryPoint> getCurrentlyExecutedFlightTrajectory(long accountId);
 
     void receiveMqttBrokerMessage(String message);
 
