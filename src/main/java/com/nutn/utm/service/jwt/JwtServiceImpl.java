@@ -10,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import sun.security.acl.PrincipalImpl;
 
 import javax.crypto.SecretKey;
+import java.security.Principal;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -26,13 +29,13 @@ public class JwtServiceImpl implements JwtService{
     final static ResourceBundle resource = ResourceBundle.getBundle("secret");
     final static String secret = resource.getString("jwt.secret");
     static final long expirationTime = 86400000;//millisecond, 1 Day.
-    public final static String PILOT_ACCOUNT = "pilotAccount";
+    public final static String ACCOUNT_ID = "accountId";
 
     public String createToken(Pilot pilot) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .claim(PILOT_ACCOUNT, pilot.getAccount())
+                .claim(ACCOUNT_ID, pilot.getId())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -64,7 +67,7 @@ public class JwtServiceImpl implements JwtService{
             return new JwtAuthResponseDto(AuthenticationMessage.INVALID_MESSAGE, HttpStatus.UNAUTHORIZED);
 
         try {
-            extractClaim(token, PILOT_ACCOUNT);
+            extractClaim(token, ACCOUNT_ID);
         } catch (ExpiredJwtException e) {
             SecurityContextHolder.getContext().setAuthentication(null);
             message = AuthenticationMessage.EXPIRED_MESSAGE;
@@ -78,7 +81,7 @@ public class JwtServiceImpl implements JwtService{
     }
 
     public Authentication getAuthentication(String token) {
-        String pilotAccount = extractClaim(token, PILOT_ACCOUNT);
-        return new UsernamePasswordAuthenticationToken(pilotAccount, null, null);
+        String accountId = extractClaim(token, ACCOUNT_ID);
+        return new UsernamePasswordAuthenticationToken(accountId, null, null);
     }
 }

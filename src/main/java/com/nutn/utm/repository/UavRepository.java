@@ -17,4 +17,5 @@ public interface UavRepository extends JpaRepository<Uav, Long> {
 
     Uav findByMacAddress(String macAddress);
 
+    Uav findByPilotIdAndMacAddress(long accountId, String macAddress);
 }

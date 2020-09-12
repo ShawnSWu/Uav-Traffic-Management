@@ -9,4 +9,5 @@ public interface UavService {
 
     Uav getUavIfExists(String macAddress);
 
+    Uav checkIfPilotOwnsThisUav(long accountId, String macAddress);
 }

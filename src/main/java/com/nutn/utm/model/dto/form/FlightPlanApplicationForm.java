@@ -23,10 +23,6 @@ import javax.validation.constraints.NotNull;
 public class FlightPlanApplicationForm {
 
     @NotBlank(message = ValidationMessage.MAY_NOT_BE_EMPTY)
-    @JsonProperty("accountId")
-    private long accountId;
-
-    @NotBlank(message = ValidationMessage.MAY_NOT_BE_EMPTY)
     @JsonProperty("macAddress")
     private String macAddress;
 
