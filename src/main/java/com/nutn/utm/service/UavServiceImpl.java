@@ -7,8 +7,6 @@ import com.nutn.utm.repository.UavRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
@@ -21,17 +19,13 @@ public class UavServiceImpl implements UavService {
 
     @Override
     public Uav getUavIfExists(String macAddress) {
-        Uav uav = uavRepository.findByMacAddress(macAddress);
-        if (!Optional.ofNullable(uav).isPresent())
-            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV);
-        return uav;
+        return uavRepository.findByMacAddress(macAddress)
+                .orElseThrow(() -> new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV));
     }
 
     @Override
     public Uav checkIfPilotOwnsThisUav(long accountId, String macAddress) {
-        Uav uav = uavRepository.findByPilotIdAndMacAddress(accountId, macAddress);
-        if (!Optional.ofNullable(uav).isPresent())
-            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV);
-        return uav;
+        return uavRepository.findByPilotIdAndMacAddress(accountId, macAddress)
+                .orElseThrow(() -> new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_UAV));
     }
 }

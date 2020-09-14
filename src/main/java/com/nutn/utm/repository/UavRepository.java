@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -15,7 +16,7 @@ public interface UavRepository extends JpaRepository<Uav, Long> {
 
     List<Uav> findAllByPilotAccount(String pilotAccount);
 
-    Uav findByMacAddress(String macAddress);
+    Optional<Uav> findByMacAddress(String macAddress);
 
-    Uav findByPilotIdAndMacAddress(long accountId, String macAddress);
+    Optional<Uav> findByPilotIdAndMacAddress(long accountId, String macAddress);
 }

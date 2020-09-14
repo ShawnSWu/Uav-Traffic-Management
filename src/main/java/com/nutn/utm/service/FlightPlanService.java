@@ -5,6 +5,7 @@ import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Uav;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface FlightPlanService {
 
-    FlightPlan applyFlightPlan(FlightPlanApplicationForm flightPlanApplicationForm);
+    FlightPlan applyFlightPlan(long accountId, FlightPlanApplicationForm flightPlanApplicationForm);
 
     List<FlightPlan> getAllFlightPlansByDate(long accountId, String date);
 
@@ -20,7 +21,7 @@ public interface FlightPlanService {
 
     FlightPlan getFlightPlanBelongToUavRawData(String macAddress, String date, String time);
 
-    FlightPlan getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date);
+    Optional<FlightPlan> getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date);
 
     void deleteFlightPlan(long planId);
 

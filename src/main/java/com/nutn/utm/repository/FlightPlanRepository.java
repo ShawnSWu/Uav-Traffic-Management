@@ -25,6 +25,13 @@ public interface FlightPlanRepository extends JpaRepository<FlightPlan, Long> {
     @Query("from flight_plan where uav =?1 and executionDate=?2 and startTime <= ?3 and endTime >= ?3")
     Optional<FlightPlan> findByMacAddressAndExecutionDateAndBetweenStartAndEndTime(Uav uav, Date date, Date time);
 
-    FlightPlan findByUavAndExecutionDateEqualsAndEndTimeGreaterThanEqualAndStartTimeLessThanEqual(
+    @Query("from flight_plan where uav.pilot.id =?1 and executionDate=?2 and startTime <= ?3 and endTime >= ?3")
+    List<FlightPlan> findAllByPilotIdAndExecutionDateAndBetweenStartAndEndTime(long account, Date date, Date time);
+
+    List<FlightPlan> findAllByUavPilotIdAndExecutionDateAndEndTimeLessThanEqual(long account, Date date, Date time);
+
+    List<FlightPlan> findAllByUavPilotIdAndExecutionDateAndStartTimeGreaterThan(long account, Date date, Date time);
+
+    Optional<FlightPlan> findByUavAndExecutionDateEqualsAndEndTimeGreaterThanEqualAndStartTimeLessThanEqual(
             Uav uav, Date date, Date endTime, Date startTime);
 }

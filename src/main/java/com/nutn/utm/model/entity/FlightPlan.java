@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -45,5 +46,8 @@ public class FlightPlan {
     private String flightPlanWayPoints;
 
     private String description;
+
+    @OneToMany(mappedBy = "flightPlan", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
+    private List<FlightData> flightData;
 
 }

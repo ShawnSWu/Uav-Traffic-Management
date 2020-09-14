@@ -3,7 +3,6 @@ package com.nutn.utm.service;
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
-import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.utility.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -39,17 +37,16 @@ public class FlightPlanFeasibilityValidator {
             throw new InvalidRequestException(startTime, "startTime",
                     ValidationMessage.EXPECTED_TAKEOFF_TIME_NOT_BEFORE_1Hour_MESSAGE);
         }
-
-        FlightPlan existingPlan = getTimeConflictFlightPlanIfExist(planFormDto.getMacAddress(), executionDate, startTime, endTime);
-        if (Optional.ofNullable(existingPlan).isPresent()) {
+        if (isApplicationFormTimeConflictWithOtherFlightPlan(planFormDto.getMacAddress(), planFormDto.getExecutionDate(), startTime, endTime)) {
             throw new InvalidRequestException(startTime, "startTime",
-                    String.format(ValidationMessage.PLAN_TIME_CONFLICT, existingPlan.getStartTime(), existingPlan.getEndTime()));
+                    String.format(ValidationMessage.PLAN_TIME_CONFLICT, startTime, endTime));
         }
+
     }
 
-    private FlightPlan getTimeConflictFlightPlanIfExist(String macAddress, String date, String startTime, String endTime) {
+    private boolean isApplicationFormTimeConflictWithOtherFlightPlan(String macAddress, String date, String startTime, String endTime) {
         Uav confirmUav = uavService.getUavIfExists(macAddress);
-        return flightPlanService.getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(confirmUav, endTime, startTime, date);
+        return flightPlanService.getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(confirmUav, endTime, startTime, date).isPresent();
     }
 
 
