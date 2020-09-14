@@ -47,8 +47,7 @@ public class FlightPlan {
 
     private String description;
 
-    @OneToMany
-    @JoinColumn(name = "flight_plan", referencedColumnName = "id")
-    private List<TrajectoryPoint> trajectoryPoint;
+    @OneToMany(mappedBy = "flightPlan", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
+    private List<FlightData> flightData;
 
 }

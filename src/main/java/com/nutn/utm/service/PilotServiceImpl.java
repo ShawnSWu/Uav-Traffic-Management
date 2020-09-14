@@ -7,7 +7,6 @@ import com.nutn.utm.repository.PilotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -20,18 +19,14 @@ public class PilotServiceImpl implements PilotService {
 
     @Override
     public Pilot getPilotIfExists(long accountId){
-        Pilot pilot = pilotRepository.findById(accountId);
-        if (!Optional.ofNullable(pilot).isPresent())
-            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT);
-        return pilot;
+        return pilotRepository.findById(accountId)
+                .orElseThrow(()-> new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT));
     }
 
     @Override
     public Pilot getPilotByAccount(String account) {
-        Pilot pilot = pilotRepository.findByAccount(account);
-        if (!Optional.ofNullable(pilot).isPresent())
-            throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT);
-        return pilot;
+        return pilotRepository.findByAccount(account)
+                .orElseThrow(() -> new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_PILOT));
     }
 
 

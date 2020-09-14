@@ -2,14 +2,19 @@ package com.nutn.utm.service;
 
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
 import com.nutn.utm.model.entity.FlightPlan;
-import com.nutn.utm.model.entity.TrajectoryPoint;
+import com.nutn.utm.model.entity.FlightData;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 public interface RealTimeMonitorUavService {
+
+    String UAV_REALTIME_TRAJECTORY_TOPIC = "/realTime/uav/trajectory/%d";
+
+    String UAV_UNSTABLE_NOTIFY_TOPIC = "/realTime/uav/unstable/%d";
 
     List<FlightPlan> getCurrentlyExecutingFlightPlans(long accountId);
 
@@ -17,9 +22,9 @@ public interface RealTimeMonitorUavService {
 
     List<FlightPlan> getCurrentlyPrepareFlightPlans(long accountId);
 
-    List<TrajectoryPoint> getCurrentlyExecutingFlightTrajectory(long accountId);
+    Map<Long, List<FlightData>> getCurrentlyExecutingFlightTrajectory(long accountId);
 
-    List<TrajectoryPoint> getCurrentlyExecutedFlightTrajectory(long accountId);
+    Map<Long, List<FlightData>> getCurrentlyExecutedFlightTrajectory(long accountId);
 
     void receiveMqttBrokerMessage(String message);
 
@@ -27,7 +32,7 @@ public interface RealTimeMonitorUavService {
 
     void saveRealTimeUavRawData(LoRaGatewayMessage loRaGatewayMessage);
 
-    void predictTrajectoryAndStability(List<TrajectoryPoint> trajectory);
+    void predictTrajectoryAndStability(List<FlightData> trajectory);
 
 
 }

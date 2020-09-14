@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.model.UavRawData;
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
 import com.nutn.utm.model.entity.FlightPlan;
-import com.nutn.utm.model.entity.TrajectoryPoint;
+import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.repository.FlightPlanRepository;
-import com.nutn.utm.repository.TrajectoryPointRepository;
+import com.nutn.utm.repository.FlightDataRepository;
 import com.nutn.utm.service.mqtt.MqttMessagePublisher;
 import com.nutn.utm.utility.DateTimeUtils;
 import com.nutn.utm.utility.cayenne.CayenneLPPDataParser;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -35,7 +36,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     private FlightPlanRepository flightPlanRepository;
 
     @Autowired
-    private TrajectoryPointRepository trajectoryPointRepository;
+    private FlightDataRepository flightDataRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -71,13 +72,16 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     }
 
     @Override
-    public List<TrajectoryPoint> getCurrentlyExecutingFlightTrajectory(long accountId) {
-        return null;
+    public Map<Long, List<FlightData>> getCurrentlyExecutingFlightTrajectory(long accountId) {
+        List<FlightPlan> currentlyExecutingFlightPlan = getCurrentlyExecutingFlightPlans(accountId);
+        return currentlyExecutingFlightPlan.stream().collect(Collectors.toMap(FlightPlan::getId, FlightPlan::getFlightData));
     }
 
     @Override
-    public List<TrajectoryPoint> getCurrentlyExecutedFlightTrajectory(long accountId) {
-        return null;
+    public Map<Long, List<FlightData>> getCurrentlyExecutedFlightTrajectory(long accountId) {
+        List<FlightPlan> currentlyExecutedFlightPlan = getCurrentlyExecutedFlightPlans(accountId);
+        return currentlyExecutedFlightPlan.stream().collect(Collectors.toMap(FlightPlan::getId, FlightPlan::getFlightData));
+
     }
 
     @Override
@@ -103,7 +107,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
 
         Optional<FlightPlan> belongToUavRawDataPlan = findFlightPlanBelongToUavRawData(macAddress, date, time);
         belongToUavRawDataPlan.ifPresent(plan -> {
-            TrajectoryPoint trajectoryPoint = TrajectoryPoint.builder()
+            FlightData flightData = FlightData.builder()
                     .date(DateTimeUtils.convertToDate(date))
                     .time(DateTimeUtils.convertToTime(time))
                     .latitude(uavRawData.getGps().getLatitude())
@@ -123,8 +127,16 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
                     .nedEast(uavRawData.getNedCoordinate().getEast())
                     .flightPlan(plan)
                     .hex_data_packet(loRaGatewayMessage.getData()).build();
-            trajectoryPointRepository.save(trajectoryPoint);
+            flightDataRepository.save(flightData);
+            long accountId = proceedingFlightPlanCache.get(macAddress).getUav().getPilot().getId();
+            pushNotificationToMqttBroker(accountId);
         });
+    }
+
+    private void pushNotificationToMqttBroker(long accountId) {
+        Map<Long, List<FlightData>>  currentlyExecutingTrajectory = getCurrentlyExecutingFlightTrajectory(accountId);
+        String trajectory = geoJsonConverter.convertFlightTrajectoryToString(currentlyExecutingTrajectory);
+        mqttMessagePublisher.sendToMqtt(String.format(UAV_REALTIME_TRAJECTORY_TOPIC, accountId), trajectory);
     }
 
     private Optional<FlightPlan> findFlightPlanBelongToUavRawData(String macAddress, String date, String time) {
@@ -152,7 +164,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
 
 
     @Override
-    public void predictTrajectoryAndStability(List<TrajectoryPoint> trajectory) {
+    public void predictTrajectoryAndStability(List<FlightData> trajectory) {
 
     }
 }

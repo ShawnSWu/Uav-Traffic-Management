@@ -1,6 +1,6 @@
 package com.nutn.utm.repository;
 
-import com.nutn.utm.model.entity.TrajectoryPoint;
+import com.nutn.utm.model.entity.FlightData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface TrajectoryPointRepository extends JpaRepository<TrajectoryPoint, Long> {
+public interface FlightDataRepository extends JpaRepository<FlightData, Long> {
 }

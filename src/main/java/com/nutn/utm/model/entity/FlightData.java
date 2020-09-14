@@ -11,12 +11,12 @@ import java.util.Date;
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
-@Entity(name = "trajectory_point")
+@Entity(name = "flight_data")
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrajectoryPoint {
+public class FlightData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

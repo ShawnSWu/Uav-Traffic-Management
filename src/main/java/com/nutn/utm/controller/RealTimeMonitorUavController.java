@@ -1,6 +1,7 @@
 package com.nutn.utm.controller;
 
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
+import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollectionDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.service.RealTimeMonitorUavService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
@@ -47,6 +48,20 @@ public class RealTimeMonitorUavController {
         long accountId = Long.parseLong(authentication.getPrincipal().toString());
         List<FlightPlan> todayPrepareFlightPlan = realTimeMonitorUavService.getCurrentlyPrepareFlightPlans(accountId);
         return geoJsonConverter.convertFlightPlansToFeatureCollection(todayPrepareFlightPlan);
+    }
+
+    @GetMapping(value = "/trajectory/executing")
+    FlightTrajectoryFeatureCollectionDto getExecutingFlightTrajectory(Authentication authentication){
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
+        return geoJsonConverter.convertFlightTrajectoryToFeatureCollection(
+                realTimeMonitorUavService.getCurrentlyExecutingFlightTrajectory(accountId));
+    }
+
+    @GetMapping(value = "/trajectory/executed")
+    FlightTrajectoryFeatureCollectionDto getExecutedFlightTrajectory(Authentication authentication){
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
+        return geoJsonConverter.convertFlightTrajectoryToFeatureCollection(
+                realTimeMonitorUavService.getCurrentlyExecutedFlightTrajectory(accountId));
     }
 
 }

@@ -95,7 +95,7 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     }
 
     @Override
-    public FlightPlan getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date) {
+    public Optional<FlightPlan> getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date) {
         return flightPlanRepository.findByUavAndExecutionDateEqualsAndEndTimeGreaterThanEqualAndStartTimeLessThanEqual(
                 uav,DateTimeUtils.convertToDate(date), DateTimeUtils.convertToTime(endTime), DateTimeUtils.convertToTime(startTime));
     }

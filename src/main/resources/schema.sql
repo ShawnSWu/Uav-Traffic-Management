@@ -1,4 +1,4 @@
-drop table if exists trajectory_point;
+drop table if exists flight_data;
 drop table if exists flight_plan;
 drop table if exists uav, pilot;
 
@@ -43,7 +43,7 @@ create table flight_plan
 );
 
 
-create table trajectory_point
+create table flight_data
 (
     id              integer          not null auto_increment,
     date            date             not null,

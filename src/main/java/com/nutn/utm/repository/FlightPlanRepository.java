@@ -32,6 +32,6 @@ public interface FlightPlanRepository extends JpaRepository<FlightPlan, Long> {
 
     List<FlightPlan> findAllByUavPilotIdAndExecutionDateAndStartTimeGreaterThan(long account, Date date, Date time);
 
-    FlightPlan findByUavAndExecutionDateEqualsAndEndTimeGreaterThanEqualAndStartTimeLessThanEqual(
+    Optional<FlightPlan> findByUavAndExecutionDateEqualsAndEndTimeGreaterThanEqualAndStartTimeLessThanEqual(
             Uav uav, Date date, Date endTime, Date startTime);
 }

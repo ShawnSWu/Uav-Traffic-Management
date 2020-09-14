@@ -5,16 +5,16 @@ import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
 import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeatureCollection;
+import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollectionDto;
 import com.nutn.utm.model.entity.FlightPlan;
+import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.utility.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -26,7 +26,7 @@ public class GeoJsonConverter {
     @Autowired
     ObjectMapper objectMapper;
 
-    public FlightPlanFeatureCollectionDto convertFlightPlansToFeatureCollection(List<FlightPlan> flightPlans){
+    public FlightPlanFeatureCollectionDto convertFlightPlansToFeatureCollection(List<FlightPlan> flightPlans) {
         FeatureCollectionBuilder featureCollectionBuilder = GeoJsonTool.buildFeatureCollection();
 
         flightPlans.forEach(flightPlan -> {
@@ -43,9 +43,9 @@ public class GeoJsonConverter {
         return featureCollectionBuilder.buildJsonObject(FlightPlanFeatureCollectionDto.class);
     }
 
-    public FlightPlanFeatureDto convertFlightPlanToFeature(FlightPlan flightPlan){
+    public FlightPlanFeatureDto convertFlightPlanToFeature(FlightPlan flightPlan) {
         FeatureBuilder featureBuilder = GeoJsonTool.buildFeature();
-        if (flightPlan!= null) {
+        if (flightPlan != null) {
             FlightPlanWayPointsDto flightPlanPath = new FlightPlanWayPointsDto(flightPlan.getFlightPlanWayPoints());
 
             double[][] planPoint = flightPlanPath.getCoordinate();
@@ -60,7 +60,7 @@ public class GeoJsonConverter {
         return featureBuilder.buildJsonObject(FlightPlanFeatureDto.class);
     }
 
-    private Properties createFlightPlanProperties(FlightPlan flightPlan, List<List<Double>> lineStringPoint){
+    private Properties createFlightPlanProperties(FlightPlan flightPlan, List<List<Double>> lineStringPoint) {
         List<Double> startPoint = lineStringPoint.get(0);
         List<Double> endPoint = lineStringPoint.get(lineStringPoint.size() - 1);
         List<String> startAndEndPoint = Arrays.asList(startPoint.toString(), endPoint.toString());
@@ -78,7 +78,7 @@ public class GeoJsonConverter {
         return properties;
     }
 
-    public GeographyLimitAreaFeatureCollection convertAreaToGeographyCollection(byte[] area){
+    public GeographyLimitAreaFeatureCollection convertAreaToGeographyCollection(byte[] area) {
         GeographyLimitAreaFeatureCollection geographyLimitAreaFeatureCollection = null;
         try {
             geographyLimitAreaFeatureCollection = objectMapper.readValue(area, GeographyLimitAreaFeatureCollection.class);
@@ -87,4 +87,46 @@ public class GeoJsonConverter {
         }
         return geographyLimitAreaFeatureCollection;
     }
+
+    private FeatureCollectionBuilder getFlightTrajectoryToFeatureCollection(Map<Long, List<FlightData>> executingFlightTrajectory) {
+        FeatureCollectionBuilder featureCollectionBuilder = GeoJsonTool.buildFeatureCollection();
+        executingFlightTrajectory.forEach(((planId, flightDataList) -> {
+            if (!flightDataList.isEmpty()) {
+                List<List<Double>> planFlightTrajectory = flightDataList.stream()
+                        .map(flightData -> Arrays.asList(flightData.getLatitude(), flightData.getLongitude()))
+                        .collect(Collectors.toList());
+
+                Properties trajectoryProperties = createFlightTrajectoryProperties(planId, flightDataList);
+
+                featureCollectionBuilder.addLineString(planFlightTrajectory, trajectoryProperties);
+            }
+        }));
+        return featureCollectionBuilder;
+    }
+
+    public FlightTrajectoryFeatureCollectionDto convertFlightTrajectoryToFeatureCollection(Map<Long, List<FlightData>> executingFlightTrajectory) {
+        return getFlightTrajectoryToFeatureCollection(executingFlightTrajectory).buildJsonObject(FlightTrajectoryFeatureCollectionDto.class);
+    }
+
+    public String convertFlightTrajectoryToString(Map<Long, List<FlightData>> executingFlightTrajectory) {
+        return getFlightTrajectoryToFeatureCollection(executingFlightTrajectory).buildToString();
+    }
+
+    private Properties createFlightTrajectoryProperties(long planId, List<FlightData> flightDataList) {
+        FlightData currentFlightData = flightDataList.get(flightDataList.size() - 1);
+
+        Double currentLongitude = currentFlightData.getLongitude();
+        Double currentLatitude = currentFlightData.getLatitude();
+
+        Properties properties = new Properties();
+        properties.setProperty("planId", String.valueOf(planId));
+        properties.setProperty("macAddress", currentFlightData.getFlightPlan().getUav().getMacAddress());
+        properties.setProperty("latestReceivingTime", DateTimeUtils.convertTimeToString(currentFlightData.getTime()));
+        properties.setProperty("currentFlyAltitude", String.valueOf(currentFlightData.getAltitude()));
+        properties.setProperty("currentLocation", String.format("[%s, %s]", currentLongitude, currentLatitude));
+        properties.setProperty("predictLocation", "");
+        return properties;
+    }
+
+
 }
