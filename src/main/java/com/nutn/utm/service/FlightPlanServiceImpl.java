@@ -150,6 +150,6 @@ public class FlightPlanServiceImpl implements FlightPlanService {
         String time = DateTimeUtils.convertTimeToString(flightPlan.getExecutionDate());
         LocalDateTime startDateTime = DateTimeUtils.combineIntoToLocalDateTime(date, time);
         LocalDateTime now = DateTimeUtils.getCurrentLocalDateTime();
-        return startDateTime.isBefore(now);
+        return startDateTime.isAfter(now);
     }
 }
