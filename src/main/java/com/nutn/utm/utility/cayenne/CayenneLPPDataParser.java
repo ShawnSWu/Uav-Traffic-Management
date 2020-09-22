@@ -1,6 +1,6 @@
 package com.nutn.utm.utility.cayenne;
 
-import com.nutn.utm.model.UavRawData;
+import com.nutn.utm.model.UavSensingData;
 import com.nutn.utm.utility.cayenne.decoder.*;
 import com.nutn.utm.utility.cayenne.type.*;
 
@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  */
 public class CayenneLPPDataParser {
 
-    public static UavRawData parser(String cayenneHexString){
+    public static UavSensingData parser(String cayenneHexString){
         String gpsHex = cayenneHexString.substring(4,22);
         String gyrometerHex = cayenneHexString.substring(26,38);
         String accelerometerHex = cayenneHexString.substring(42,54);
@@ -36,7 +36,7 @@ public class CayenneLPPDataParser {
         Accelerometer accelerometer = new AccelerometerDecoder().decode(accelerometerHexByteBuffer);
         NedCoordinate ned = new NedDecoder().decode(nedHexByteBuffer);
         Attitude attitude = new AttitudeDecoder().decode(attitudeHexByteBuffer);
-        return new UavRawData(gps, gyrometer, accelerometer, ned, attitude);
+        return new UavSensingData(gps, gyrometer, accelerometer, ned, attitude);
     }
 
     private static byte[] hexStringToByteArray(String s) {

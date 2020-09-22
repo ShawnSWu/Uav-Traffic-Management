@@ -32,7 +32,6 @@ public interface RealTimeMonitorUavService {
 
     void saveRealTimeUavRawData(LoRaGatewayMessage loRaGatewayMessage);
 
-    void predictTrajectoryAndStability(List<FlightData> trajectory);
 
 
 }

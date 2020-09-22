@@ -2,8 +2,13 @@ package com.nutn.utm.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nutn.utm.model.UavRawData;
+import com.nutn.utm.model.PredictTrajectoryGeoJsonProperties;
+import com.nutn.utm.model.UavSensingData;
+import com.nutn.utm.model.dto.ai.PredictRequestBodyDto;
+import com.nutn.utm.model.dto.ai.PredictResultListDto;
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
+import com.nutn.utm.model.dto.ai.TrajectoryFeatureDto;
+import com.nutn.utm.model.dto.weather.WeatherDataDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.repository.FlightPlanRepository;
@@ -13,8 +18,11 @@ import com.nutn.utm.utility.DateTimeUtils;
 import com.nutn.utm.utility.cayenne.CayenneLPPDataParser;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -46,6 +54,15 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
 
     @Autowired
     GeoJsonConverter geoJsonConverter;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    HttpHeaders headers;
+
+    private final int aiTimeStep = 4;
+
 
     @Override
     public List<FlightPlan> getCurrentlyExecutingFlightPlans(long accountId) {
@@ -98,48 +115,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
         }
     }
 
-    @Override
-    public void saveRealTimeUavRawData(LoRaGatewayMessage loRaGatewayMessage) {
-        UavRawData uavRawData = CayenneLPPDataParser.parser(loRaGatewayMessage.getData());
-        String macAddress = loRaGatewayMessage.getMacAddr();
-        String date = LocalDate.now().toString();
-        String time = LocalTime.now().withNano(0).toString();
-
-        Optional<FlightPlan> belongToUavRawDataPlan = findFlightPlanBelongToUavRawData(macAddress, date, time);
-        belongToUavRawDataPlan.ifPresent(plan -> {
-            FlightData flightData = FlightData.builder()
-                    .date(DateTimeUtils.convertToDate(date))
-                    .time(DateTimeUtils.convertToTime(time))
-                    .latitude(uavRawData.getGps().getLatitude())
-                    .longitude(uavRawData.getGps().getLongitude())
-                    .altitude(uavRawData.getGps().getAltitude())
-                    .yaw(uavRawData.getAttitude().getYaw())
-                    .roll(uavRawData.getAttitude().getRoll())
-                    .pitch(uavRawData.getAttitude().getPitch())
-                    .gyroX(uavRawData.getGyrometer().getX())
-                    .gyroY(uavRawData.getGyrometer().getY())
-                    .gyroZ(uavRawData.getGyrometer().getZ())
-                    .accX(uavRawData.getAccelerometer().getX())
-                    .accY(uavRawData.getAccelerometer().getY())
-                    .accZ(uavRawData.getAccelerometer().getZ())
-                    .nedNorth(uavRawData.getNedCoordinate().getNorth())
-                    .nedDown(uavRawData.getNedCoordinate().getEast())
-                    .nedEast(uavRawData.getNedCoordinate().getEast())
-                    .flightPlan(plan)
-                    .hex_data_packet(loRaGatewayMessage.getData()).build();
-            flightDataRepository.save(flightData);
-            long accountId = proceedingFlightPlanCache.get(macAddress).getUav().getPilot().getId();
-            pushNotificationToMqttBroker(accountId);
-        });
-    }
-
-    private void pushNotificationToMqttBroker(long accountId) {
-        Map<Long, List<FlightData>>  currentlyExecutingTrajectory = getCurrentlyExecutingFlightTrajectory(accountId);
-        String trajectory = geoJsonConverter.convertFlightTrajectoryToString(currentlyExecutingTrajectory);
-        mqttMessagePublisher.sendToMqtt(String.format(UAV_REALTIME_TRAJECTORY_TOPIC, accountId), trajectory);
-    }
-
-    private Optional<FlightPlan> findFlightPlanBelongToUavRawData(String macAddress, String date, String time) {
+    private Optional<FlightPlan> findFlightPlanAccordingToMacAddressAndTime(String macAddress, String date, String time) {
         FlightPlan belongToUavRawDataFlightPlan;
         if (!proceedingFlightPlanCache.containsKey(macAddress)) {
             belongToUavRawDataFlightPlan = flightPlanService.getFlightPlanBelongToUavRawData(macAddress, date, time);
@@ -151,6 +127,116 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
         return Optional.ofNullable(belongToUavRawDataFlightPlan);
     }
 
+
+    @Override
+    public void saveRealTimeUavRawData(LoRaGatewayMessage loRaGatewayMessage) {
+        UavSensingData uavSensingData = CayenneLPPDataParser.parser(loRaGatewayMessage.getData());
+        String macAddress = loRaGatewayMessage.getMacAddr();
+        String date = LocalDate.now().toString();
+        String time = LocalTime.now().withNano(0).toString();
+
+        Optional<FlightPlan> belongToUavRawDataPlan = findFlightPlanAccordingToMacAddressAndTime(macAddress, date, time);
+        belongToUavRawDataPlan.ifPresent(plan -> {
+            FlightData flightData = FlightData.builder()
+                    .date(DateTimeUtils.convertToDate(date))
+                    .time(DateTimeUtils.convertToTime(time))
+                    .latitude(uavSensingData.getGps().getLatitude())
+                    .longitude(uavSensingData.getGps().getLongitude())
+                    .altitude(uavSensingData.getGps().getAltitude())
+                    .yaw(uavSensingData.getAttitude().getYaw())
+                    .roll(uavSensingData.getAttitude().getRoll())
+                    .pitch(uavSensingData.getAttitude().getPitch())
+                    .gyroX(uavSensingData.getGyrometer().getX())
+                    .gyroY(uavSensingData.getGyrometer().getY())
+                    .gyroZ(uavSensingData.getGyrometer().getZ())
+                    .accX(uavSensingData.getAccelerometer().getX())
+                    .accY(uavSensingData.getAccelerometer().getY())
+                    .accZ(uavSensingData.getAccelerometer().getZ())
+                    .nedNorth(uavSensingData.getNedCoordinate().getNorth())
+                    .nedDown(uavSensingData.getNedCoordinate().getEast())
+                    .nedEast(uavSensingData.getNedCoordinate().getEast())
+                    .flightPlan(plan)
+                    .hex_data_packet(loRaGatewayMessage.getData()).build();
+            flightDataRepository.save(flightData);
+            long accountId = proceedingFlightPlanCache.get(macAddress).getUav().getPilot().getId();
+
+            PredictTrajectoryGeoJsonProperties properties = PredictTrajectoryGeoJsonProperties.builder()
+                    .planId(String.valueOf(plan.getId()))
+                    .macAddress(macAddress)
+                    .currentFlyAltitude(String.valueOf(uavSensingData.getGps().getAltitude()))
+                    .latestReceivingTime(String.format("%s-%s", date, time))
+                    .build();
+
+            pushNewTrajectoryToMqttBroker(properties, accountId);
+        });
+    }
+
+    private void pushNewTrajectoryToMqttBroker(PredictTrajectoryGeoJsonProperties properties, long brokerTopicAccountId) {
+        Map<Long, List<FlightData>> executingFlightTrajectory = getCurrentlyExecutingFlightTrajectory(brokerTopicAccountId);
+        Map<Long, List<TrajectoryFeatureDto>> predictionTrajectory = predictUavTrajectory(executingFlightTrajectory);
+        String predictTrajectory = geoJsonConverter.convertPredictFlightTrajectoryToString(properties, predictionTrajectory);
+        mqttMessagePublisher.sendToMqtt(String.format(UAV_REALTIME_TRAJECTORY_TOPIC, brokerTopicAccountId), predictTrajectory);
+    }
+
+    private Map<Long, List<TrajectoryFeatureDto>> predictUavTrajectory(Map<Long, List<FlightData>> executingTrajectory) {
+        Map<Long, List<TrajectoryFeatureDto>> predictResultMap = new HashMap<>();
+        List<PredictRequestBodyDto> aiModelFeatureMap = combineWeatherAndTrajectoryToBecomeAiModelFeature(executingTrajectory);
+        String aiModelServiceUrl = "http://mcn.nutn.edu.tw:5000/predict";
+        ResponseEntity<PredictResultListDto> predictResponse = restTemplate.postForEntity(aiModelServiceUrl, aiModelFeatureMap, PredictResultListDto.class);
+
+        Optional.of(predictResponse).ifPresent(responseEntity -> {
+            Objects.requireNonNull(responseEntity.getBody()).getPredictResult().forEach(predictRequestBodyDto -> {
+                predictResultMap.put(predictRequestBodyDto.getPlanId(), predictRequestBodyDto.getTrajectoryFeature());
+            });
+        });
+
+        return predictResultMap;
+    }
+
+    private List<PredictRequestBodyDto> combineWeatherAndTrajectoryToBecomeAiModelFeature(Map<Long, List<FlightData>> executingTrajectory) {
+        List<PredictRequestBodyDto> predictRequestBodyDtoList = new ArrayList<>();
+        executingTrajectory.forEach((planId, trajectory) -> {
+            if (trajectory.size() >= aiTimeStep) {
+                List<FlightData> lastFour = trajectory.subList(trajectory.size() - aiTimeStep, trajectory.size());
+                List<TrajectoryFeatureDto> lastFourWithWeatherData = new ArrayList<>();
+                int windSpeed = 0;
+                int windDegree = 0;
+                for (FlightData flightData : lastFour) {
+                    double latitude = flightData.getLatitude();
+                    double longitude = flightData.getLongitude();
+                    if (windSpeed == 0 & windDegree == 0) {
+                        WeatherDataDto weatherDataDto = getWeatherDataByLocation(latitude, longitude);
+                        windSpeed = weatherDataDto.getCurrentWeatherData().getWindSpeed();
+                        windDegree = weatherDataDto.getCurrentWeatherData().getWindDegree();
+                    }
+                    TrajectoryFeatureDto modelFeatureDto = TrajectoryFeatureDto.builder()
+                            .latitude(latitude)
+                            .longitude(longitude)
+                            .windDegree(windDegree)
+                            .windSpeed(windSpeed)
+                            .build();
+                    lastFourWithWeatherData.add(modelFeatureDto);
+                }
+                PredictRequestBodyDto predictRequestBodyDto = PredictRequestBodyDto.builder()
+                        .planId(planId)
+                        .trajectoryFeature(lastFourWithWeatherData)
+                        .build();
+                predictRequestBodyDtoList.add(predictRequestBodyDto);
+            }
+        });
+        return predictRequestBodyDtoList;
+    }
+
+    private WeatherDataDto getWeatherDataByLocation(double lat, double lon) {
+        String location = String.format("%f,%f", lat, lon);
+        String accessKey = "1f70bbf9a994dde20e0bd64d5d472ae2";
+        String weatherDataApiUrl = "http://api.weatherstack.com/current?access_key=%s&query=%s";
+        String url = String.format(weatherDataApiUrl, accessKey, location);
+        ResponseEntity<WeatherDataDto> responseEntity = restTemplate.getForEntity(url, WeatherDataDto.class);
+        return Optional.of(responseEntity).get().getBody();
+    }
+
+
     @Scheduled(fixedDelay = 60000 * 15)
     @Override
     public void scanAndRemoveExpiredPlan() {
@@ -159,12 +245,5 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
             LocalTime now = DateTimeUtils.getCurrentLocalTime();
             return endTime.isAfter(now);
         });
-    }
-
-
-
-    @Override
-    public void predictTrajectoryAndStability(List<FlightData> trajectory) {
-
     }
 }
