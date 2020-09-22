@@ -58,9 +58,6 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    HttpHeaders headers;
-
     private final int aiTimeStep = 4;
 
 
