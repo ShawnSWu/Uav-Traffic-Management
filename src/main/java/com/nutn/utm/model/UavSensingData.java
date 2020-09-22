@@ -6,7 +6,7 @@ import com.nutn.utm.utility.cayenne.type.*;
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 
-public class UavRawData {
+public class UavSensingData {
 
     private Accelerometer accelerometer;
     private Gps gps;
@@ -14,7 +14,7 @@ public class UavRawData {
     private NedCoordinate nedCoordinate;
     private Attitude attitude;
 
-    public UavRawData(Gps gps, Gyrometer gyrometer, Accelerometer accelerometer, NedCoordinate nedCoordinate, Attitude attitude) {
+    public UavSensingData(Gps gps, Gyrometer gyrometer, Accelerometer accelerometer, NedCoordinate nedCoordinate, Attitude attitude) {
         this.accelerometer = accelerometer;
         this.gps = gps;
         this.gyrometer = gyrometer;
