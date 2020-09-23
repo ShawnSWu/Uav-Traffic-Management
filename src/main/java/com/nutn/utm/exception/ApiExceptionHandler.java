@@ -3,6 +3,7 @@ package com.nutn.utm.exception;
 import com.nutn.utm.model.dto.response.error.ErrorFieldDto;
 import com.nutn.utm.model.dto.response.error.NotFoundFlightPlanResponse;
 import com.nutn.utm.model.dto.response.error.RequestErrorResponseDto;
+import com.nutn.utm.model.dto.response.error.SignUpFailedResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -36,6 +37,12 @@ public class ApiExceptionHandler {
         });
         RequestErrorResponseDto errorResponse = new RequestErrorResponseDto(errorFieldList, "Invalid Request");
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(value = SignUpException.class)
+    @ResponseBody
+    public ResponseEntity<?> SignUpFailed(SignUpException e) {
+        return new ResponseEntity<>(new SignUpFailedResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

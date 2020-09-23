@@ -2,8 +2,9 @@ package com.nutn.utm.controller;
 
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.LoginFormDto;
+import com.nutn.utm.model.dto.form.SignUpFormDto;
 import com.nutn.utm.model.dto.response.LogInResponseDto;
-import com.nutn.utm.model.entity.Pilot;
+import com.nutn.utm.model.dto.response.SignUpResponseDto;
 import com.nutn.utm.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,6 @@ public class AccountController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginFormDto loginFormDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            throw new InvalidRequestException(bindingResult.getFieldErrors());
         String pilotAccount = loginFormDto.getPilotAccount().trim();
         String password = loginFormDto.getPassword().trim();
 
@@ -41,5 +40,13 @@ public class AccountController {
         return ResponseEntity.ok().body(logInResponseDto);
     }
 
+
+    @PostMapping("/signUp")
+    public ResponseEntity<SignUpResponseDto> signUp(@RequestBody @Valid SignUpFormDto signUpFormDto, BindingResult formFormatValidateResult) {
+        if(formFormatValidateResult.hasErrors())
+            throw new InvalidRequestException(formFormatValidateResult.getFieldErrors());
+        SignUpResponseDto successSignUpResponseDto = accountService.signUp(signUpFormDto);
+        return new ResponseEntity<>(successSignUpResponseDto, HttpStatus.OK);
+    }
 
 }

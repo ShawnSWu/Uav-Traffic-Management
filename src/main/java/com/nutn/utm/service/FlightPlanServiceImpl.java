@@ -32,7 +32,7 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     private FlightPlanRepository flightPlanRepository;
 
     @Autowired
-    private PilotService pilotService;
+    private AccountService accountService;
 
     @Autowired
     private UavService uavService;
@@ -73,13 +73,13 @@ public class FlightPlanServiceImpl implements FlightPlanService {
 
     @Override
     public List<FlightPlan> getAllFlightPlansByDate(long accountId, String date) {
-        Pilot confirmedPilot = pilotService.getPilotIfExists(accountId);
+        Pilot confirmedPilot = accountService.getPilotByAccountId(accountId);
         return flightPlanRepository.findAllByUavPilotAndExecutionDateEquals(confirmedPilot, DateTimeUtils.convertToDate(date));
     }
 
     @Override
     public FlightPlan getFlightPlanByPlanId(long accountId, String date, long planId) {
-        Pilot confirmedPilot = pilotService.getPilotIfExists(accountId);
+        Pilot confirmedPilot = accountService.getPilotByAccountId(accountId);
         Optional<FlightPlan> flightPlan = flightPlanRepository.findByUavPilotAndExecutionDateAndId(confirmedPilot, DateTimeUtils.convertToDate(date), planId);
         if (!flightPlan.isPresent()) {
             throw new NotFoundFlightPlanException(ApiExceptionMessage.NOT_FOUND_FLIGHT_PLAN);
