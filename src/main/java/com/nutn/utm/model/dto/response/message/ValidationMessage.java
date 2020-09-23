@@ -18,4 +18,11 @@ public interface ValidationMessage {
 
     String PLAN_TIME_CONFLICT = "This UAV will be proceeding another flight plan at %s to %s, Please choose another time.";
 
+
+    String PASSWORD_NOT_CONFORM_FORMAT = "Password must be greater than 8 characters and less than 16 characters.";
+    String ACCOUNT_NOT_CONFORM_FORMAT = "Account must be greater than 8 characters and less than 16 characters.";
+    String EMAIL_NOT_CONFORM_FORMAT = "Email does not conform the format.";
+    String USERNAME_NOT_CONFORM_FORMAT = "The username is missing or the format is incorrect.";
+    String PASSWORD_AND_RECONFIRM_DIFFERENCE = "The password does not match the reconfirmed password.";
+    String ACCOUNT_AND_PASSWORD_SAME = "Account can't be the same as password.";
 }

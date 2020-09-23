@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface UavRepository extends JpaRepository<Uav, Long> {
 
-    List<Uav> findAllByPilotAccount(String pilotAccount);
+    List<Uav> findAllByPilotId(long accountId);
 
     Optional<Uav> findByMacAddress(String macAddress);
 
