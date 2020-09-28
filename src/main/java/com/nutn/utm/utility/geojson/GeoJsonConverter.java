@@ -36,7 +36,7 @@ public class GeoJsonConverter {
             double[][] planPoint = flightPlanPath.getCoordinate();
             List<List<Double>> lineStringPoint = new ArrayList<>();
             for (double[] point : planPoint)
-                lineStringPoint.add(Arrays.asList(point[0], point[1]));
+                lineStringPoint.add(Arrays.asList(point[1], point[0]));
 
             Properties properties = createFlightPlanProperties(flightPlan, lineStringPoint);
             featureCollectionBuilder.addLineString(lineStringPoint, properties);
@@ -53,7 +53,7 @@ public class GeoJsonConverter {
             double[][] planPoint = flightPlanPath.getCoordinate();
             List<List<Double>> lineStringPoint = new ArrayList<>();
             for (double[] point : planPoint)
-                lineStringPoint.add(Arrays.asList(point[0], point[1]));
+                lineStringPoint.add(Arrays.asList(point[1], point[0]));
 
             Properties properties = createFlightPlanProperties(flightPlan, lineStringPoint);
             featureBuilder.buildLineString(lineStringPoint, properties);

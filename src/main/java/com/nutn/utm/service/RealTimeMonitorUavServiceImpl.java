@@ -178,8 +178,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     private Map<Long, List<TrajectoryFeatureDto>> predictUavTrajectory(Map<Long, List<FlightData>> executingTrajectory) {
         Map<Long, List<TrajectoryFeatureDto>> predictResultMap = new HashMap<>();
         List<PredictRequestBodyDto> aiModelFeatureMap = combineWeatherAndTrajectoryToBecomeAiModelFeature(executingTrajectory);
-        String aiModelServiceUrl = "http://mcn.nutn.edu.tw:5000/predict";
-        ResponseEntity<PredictResultListDto> predictResponse = restTemplate.postForEntity(aiModelServiceUrl, aiModelFeatureMap, PredictResultListDto.class);
+        ResponseEntity<PredictResultListDto> predictResponse = restTemplate.postForEntity(AI_MODEL_SERVER_URL, aiModelFeatureMap, PredictResultListDto.class);
 
         Optional.of(predictResponse).ifPresent(responseEntity -> {
             Objects.requireNonNull(responseEntity.getBody()).getPredictResult().forEach(predictRequestBodyDto -> {

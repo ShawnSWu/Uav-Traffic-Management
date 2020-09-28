@@ -5,14 +5,17 @@ import com.nutn.utm.model.dto.form.LoginFormDto;
 import com.nutn.utm.model.dto.form.SignUpFormDto;
 import com.nutn.utm.model.dto.response.LogInResponseDto;
 import com.nutn.utm.model.dto.response.SignUpResponseDto;
+import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -47,6 +50,12 @@ public class AccountController {
             throw new InvalidRequestException(formFormatValidateResult.getFieldErrors());
         SignUpResponseDto successSignUpResponseDto = accountService.signUp(signUpFormDto);
         return new ResponseEntity<>(successSignUpResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/drones")
+    public List<Uav> getFlightPlanByDateAndId(Authentication authentication) {
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
+        return accountService.getAllUavOfPilot(accountId);
     }
 
 }
