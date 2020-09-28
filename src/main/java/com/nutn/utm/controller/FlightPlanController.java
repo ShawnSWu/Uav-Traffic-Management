@@ -4,7 +4,9 @@ import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureDto;
+import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollectionDto;
 import com.nutn.utm.model.dto.response.FlightPlanApplicationResponseDto;
+import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.service.FlightPlanService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
@@ -16,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 
-@CrossOrigin
 @RestController
 @RequestMapping("/flightPlan")
 public class FlightPlanController {
@@ -45,6 +47,13 @@ public class FlightPlanController {
         long accountId = Long.parseLong(authentication.getPrincipal().toString());
         FlightPlan flightPlans = flightPlanService.getFlightPlanByPlanId(accountId, date, planId);
         return geoJsonConverter.convertFlightPlanToFeature(flightPlans);
+    }
+
+    @GetMapping("/trajectory/date/{date}")//TODO 檢查是否work
+    public FlightTrajectoryFeatureCollectionDto getAllTrajectoryByDate(Authentication authentication, @PathVariable String date) {
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
+        Map<Long, List<FlightData>> flightPlans = flightPlanService.getFlightTrajectoryByDate(accountId, date);
+        return geoJsonConverter.convertFlightTrajectoryToFeatureCollection(flightPlans);
     }
 
     @PostMapping

@@ -7,6 +7,7 @@ import com.nutn.utm.exception.NotFoundFlightPlanException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.model.dto.response.message.ApiExceptionMessage;
+import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Pilot;
 import com.nutn.utm.model.entity.Uav;
@@ -19,7 +20,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -103,6 +106,12 @@ public class FlightPlanServiceImpl implements FlightPlanService {
     @Override
     public void deleteFlightPlan(long planId) {
         flightPlanRepository.deleteById(planId);
+    }
+
+    @Override
+    public Map<Long, List<FlightData>> getFlightTrajectoryByDate(long accountId, String date) {
+        List<FlightPlan> flightPlans = getAllFlightPlansByDate(accountId, date);
+        return flightPlans.stream().collect(Collectors.toMap(FlightPlan::getId, FlightPlan::getFlightData));
     }
 
     @Override

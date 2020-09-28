@@ -52,9 +52,9 @@ public class AccountServiceImpl implements AccountService {
         Pilot confirmedPilot = getPilotByAccount(account);
         if (isLoginSuccess(confirmedPilot, hashedPassword)) {
             String token = jwtService.createToken(confirmedPilot);
-            return new LogInResponseDto(token, AuthenticationMessage.JWT_AUTHORIZATION_OK);
+            return new LogInResponseDto(token, confirmedPilot, AuthenticationMessage.JWT_AUTHORIZATION_OK);
         }
-        return new LogInResponseDto("", AuthenticationMessage.ACCOUNT_OR_PASSWORD_NOT_MATCH);
+        return new LogInResponseDto("", confirmedPilot, AuthenticationMessage.ACCOUNT_OR_PASSWORD_NOT_MATCH);
     }
 
     @Override

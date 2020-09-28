@@ -1,10 +1,12 @@
 package com.nutn.utm.service;
 
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
+import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Uav;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -24,6 +26,8 @@ public interface FlightPlanService {
     Optional<FlightPlan> getUavFlightPlanBetweenStartTimeAndEndTimeAtTheSameDay(Uav uav, String startTime, String endTime, String date);
 
     void deleteFlightPlan(long planId);
+
+    Map<Long, List<FlightData>> getFlightTrajectoryByDate(long accountId, String date);
 
     FlightPlan modifyFlightPlan(long planId, FlightPlanApplicationForm flightPlanApplicationForm);
 
