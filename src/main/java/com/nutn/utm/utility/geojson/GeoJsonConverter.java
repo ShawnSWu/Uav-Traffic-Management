@@ -129,11 +129,15 @@ public class GeoJsonConverter {
         return properties;
     }
 
-    public String convertPredictFlightTrajectoryToString(PredictTrajectoryGeoJsonProperties properties, Map<Long, List<TrajectoryFeatureDto>> predictFlightTrajectory) {
-        return getPredictFlightTrajectoryToFeatureCollection(properties, predictFlightTrajectory).buildToString();
+    public String convertTrajectoryWithPredictionToString(Map<Long, TrajectoryFeatureDto> predictionResult, Map<Long, List<FlightData>> executingFlightTrajectory) {
+        return getPredictFlightTrajectoryToFeatureCollection(predictionResult, executingFlightTrajectory).buildToString();
     }
 
-    private FeatureCollectionBuilder getPredictFlightTrajectoryToFeatureCollection(PredictTrajectoryGeoJsonProperties properties, Map<Long, List<TrajectoryFeatureDto>> executingFlightTrajectory) {
+    public FlightTrajectoryFeatureCollectionDto convertTrajectoryWithPrediction(Map<Long, TrajectoryFeatureDto> predictionResult, Map<Long, List<FlightData>> executingFlightTrajectory) {
+        return getPredictFlightTrajectoryToFeatureCollection(predictionResult, executingFlightTrajectory).buildJsonObject(FlightTrajectoryFeatureCollectionDto.class);
+    }
+
+    private FeatureCollectionBuilder getPredictFlightTrajectoryToFeatureCollection(Map<Long, TrajectoryFeatureDto> predictionResult, Map<Long, List<FlightData>> executingFlightTrajectory) {
         FeatureCollectionBuilder featureCollectionBuilder = GeoJsonTool.buildFeatureCollection();
         executingFlightTrajectory.forEach(((planId, flightDataList) -> {
             if (!flightDataList.isEmpty()) {
@@ -141,6 +145,21 @@ public class GeoJsonConverter {
                         .map(flightData -> Arrays.asList(flightData.getLatitude(), flightData.getLongitude()))
                         .collect(Collectors.toList());
 
+                FlightData lastFlightData = flightDataList.get(flightDataList.size() - 1);
+                String macAddress = lastFlightData.getFlightPlan().getUav().getMacAddress();
+                String date = DateTimeUtils.convertDateToString(lastFlightData.getDate());
+                String time = DateTimeUtils.convertTimeToString(lastFlightData.getTime());
+                int maxFlyingAltitude = lastFlightData.getFlightPlan().getMaxFlyingAltitude();
+                TrajectoryFeatureDto predictTrajectoryPoint = predictionResult.get(planId);
+
+                PredictTrajectoryGeoJsonProperties properties = PredictTrajectoryGeoJsonProperties.builder()
+                        .planId(String.valueOf(planId))
+                        .macAddress(macAddress)
+                        .currentFlyAltitude(String.valueOf(maxFlyingAltitude))
+                        .latestReceivingTime(String.format("%s-%s", date, time))
+                        .currentLocation(String.format("[%s, %s]",lastFlightData.getLongitude(), lastFlightData.getLatitude()))
+                        .predictNextTrajectoryPoint(String.format("[%s, %s]", predictTrajectoryPoint.getLongitude(), predictTrajectoryPoint.getLatitude()))
+                        .build();
                 Properties trajectoryProperties = createPredictFlightTrajectoryProperties(properties, flightDataList);
 
                 featureCollectionBuilder.addLineString(planFlightTrajectory, trajectoryProperties);
@@ -149,23 +168,14 @@ public class GeoJsonConverter {
         return featureCollectionBuilder;
     }
 
-    private Properties createPredictFlightTrajectoryProperties(PredictTrajectoryGeoJsonProperties predictTrajectoryGeoJsonProperties, List<TrajectoryFeatureDto> flightDataList) {
-        TrajectoryFeatureDto predictTrajectoryFeatureDto = flightDataList.get(flightDataList.size() - 1);
-        TrajectoryFeatureDto currentTrajectoryFeatureDto = flightDataList.get(flightDataList.size() - 2);
-
-        Double predictLongitude = predictTrajectoryFeatureDto.getLongitude();
-        Double predictLatitude = predictTrajectoryFeatureDto.getLatitude();
-
-        Double currentLongitude = currentTrajectoryFeatureDto.getLongitude();
-        Double currentLatitude = currentTrajectoryFeatureDto.getLatitude();
-
+    private Properties createPredictFlightTrajectoryProperties(PredictTrajectoryGeoJsonProperties predictTrajectoryGeoJsonProperties, List<FlightData> flightDataList) {
         Properties properties = new Properties();
         properties.setProperty("planId", predictTrajectoryGeoJsonProperties.getPlanId());
         properties.setProperty("macAddress", predictTrajectoryGeoJsonProperties.getMacAddress());
         properties.setProperty("latestReceivingTime", predictTrajectoryGeoJsonProperties.getLatestReceivingTime());
         properties.setProperty("currentFlyAltitude", predictTrajectoryGeoJsonProperties.getCurrentFlyAltitude());
-        properties.setProperty("currentLocation", String.format("[%s, %s]", currentLongitude, currentLatitude));
-        properties.setProperty("predictNextLocation", String.format("[%s, %s]", predictLongitude, predictLatitude));
+        properties.setProperty("currentLocation", predictTrajectoryGeoJsonProperties.getCurrentLocation());
+        properties.setProperty("predictNextLocation", predictTrajectoryGeoJsonProperties.getPredictNextTrajectoryPoint());
         return properties;
     }
 

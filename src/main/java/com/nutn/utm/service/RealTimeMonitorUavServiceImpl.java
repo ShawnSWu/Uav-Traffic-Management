@@ -2,12 +2,12 @@ package com.nutn.utm.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nutn.utm.model.PredictTrajectoryGeoJsonProperties;
 import com.nutn.utm.model.UavSensingData;
 import com.nutn.utm.model.dto.ai.PredictRequestBodyDto;
 import com.nutn.utm.model.dto.ai.PredictResultListDto;
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
 import com.nutn.utm.model.dto.ai.TrajectoryFeatureDto;
+import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
 import com.nutn.utm.model.dto.weather.WeatherDataDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.FlightData;
@@ -18,7 +18,6 @@ import com.nutn.utm.utility.DateTimeUtils;
 import com.nutn.utm.utility.cayenne.CayenneLPPDataParser;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -156,33 +155,32 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
                     .hex_data_packet(loRaGatewayMessage.getData()).build();
             flightDataRepository.save(flightData);
             long accountId = proceedingFlightPlanCache.get(macAddress).getUav().getPilot().getId();
-
-            PredictTrajectoryGeoJsonProperties properties = PredictTrajectoryGeoJsonProperties.builder()
-                    .planId(String.valueOf(plan.getId()))
-                    .macAddress(macAddress)
-                    .currentFlyAltitude(String.valueOf(uavSensingData.getGps().getAltitude()))
-                    .latestReceivingTime(String.format("%s-%s", date, time))
-                    .build();
-
-            pushNewTrajectoryToMqttBroker(properties, accountId);
+            pushNewTrajectoryToMqttBroker(accountId);
         });
     }
 
-    private void pushNewTrajectoryToMqttBroker(PredictTrajectoryGeoJsonProperties properties, long brokerTopicAccountId) {
-        Map<Long, List<FlightData>> executingFlightTrajectory = getCurrentlyExecutingFlightTrajectory(brokerTopicAccountId);
-        Map<Long, List<TrajectoryFeatureDto>> predictionTrajectory = predictUavTrajectory(executingFlightTrajectory);
-        String predictTrajectory = geoJsonConverter.convertPredictFlightTrajectoryToString(properties, predictionTrajectory);
-        mqttMessagePublisher.sendToMqtt(String.format(UAV_REALTIME_TRAJECTORY_TOPIC, brokerTopicAccountId), predictTrajectory);
+    @Override
+    public TrajectoryAndPredictResultDto getCurrentlyTrajectoryWithPrediction(long accountId) {
+        Map<Long, List<FlightData>> executingFlightTrajectory = getCurrentlyExecutingFlightTrajectory(accountId);
+        Map<Long, TrajectoryFeatureDto> predictionResult = predictUavTrajectory(executingFlightTrajectory);
+        return TrajectoryAndPredictResultDto.builder().executingFlightTrajectory(executingFlightTrajectory).predictionResult(predictionResult).build();
     }
 
-    private Map<Long, List<TrajectoryFeatureDto>> predictUavTrajectory(Map<Long, List<FlightData>> executingTrajectory) {
-        Map<Long, List<TrajectoryFeatureDto>> predictResultMap = new HashMap<>();
+    private void pushNewTrajectoryToMqttBroker(long accountId) {
+        TrajectoryAndPredictResultDto trajectoryAndPredictResultDto = getCurrentlyTrajectoryWithPrediction(accountId);
+        String predictTrajectory = geoJsonConverter.convertTrajectoryWithPredictionToString(trajectoryAndPredictResultDto.getPredictionResult(), trajectoryAndPredictResultDto.getExecutingFlightTrajectory());
+        mqttMessagePublisher.sendToMqtt(String.format(UAV_REALTIME_TRAJECTORY_TOPIC, accountId), predictTrajectory);
+    }
+
+
+    private Map<Long, TrajectoryFeatureDto> predictUavTrajectory(Map<Long, List<FlightData>> executingTrajectory) {
+        Map<Long, TrajectoryFeatureDto> predictResultMap = new HashMap<>();
         List<PredictRequestBodyDto> aiModelFeatureMap = combineWeatherAndTrajectoryToBecomeAiModelFeature(executingTrajectory);
         ResponseEntity<PredictResultListDto> predictResponse = restTemplate.postForEntity(AI_MODEL_SERVER_URL, aiModelFeatureMap, PredictResultListDto.class);
 
         Optional.of(predictResponse).ifPresent(responseEntity -> {
             Objects.requireNonNull(responseEntity.getBody()).getPredictResult().forEach(predictRequestBodyDto -> {
-                predictResultMap.put(predictRequestBodyDto.getPlanId(), predictRequestBodyDto.getTrajectoryFeature());
+                predictResultMap.put(predictRequestBodyDto.getPlanId(), predictRequestBodyDto.getTrajectoryFeature().get(aiTimeStep));
             });
         });
 

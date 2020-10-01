@@ -1,6 +1,7 @@
 package com.nutn.utm.service;
 
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
+import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.FlightData;
 
@@ -34,6 +35,6 @@ public interface RealTimeMonitorUavService {
 
     void saveRealTimeUavRawData(LoRaGatewayMessage loRaGatewayMessage);
 
-
+    TrajectoryAndPredictResultDto getCurrentlyTrajectoryWithPrediction(long accountId);
 
 }
