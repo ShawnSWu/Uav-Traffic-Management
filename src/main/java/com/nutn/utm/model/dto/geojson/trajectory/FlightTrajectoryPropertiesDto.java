@@ -16,7 +16,7 @@ import lombok.Getter;
         "latestReceivingTime",
         "currentFlyAltitude",
         "currentLocation",
-        "predictLocation"
+        "predictNextLocation"
 })
 public class FlightTrajectoryPropertiesDto{
 
@@ -30,6 +30,6 @@ public class FlightTrajectoryPropertiesDto{
 
     private String currentLocation;
 
-    private String predictLocation;
+    private String predictNextLocation;
 
 }

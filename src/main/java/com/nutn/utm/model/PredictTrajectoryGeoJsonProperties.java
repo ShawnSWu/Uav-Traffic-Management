@@ -16,5 +16,7 @@ public class PredictTrajectoryGeoJsonProperties {
     private String macAddress;
     private String latestReceivingTime;
     private String currentFlyAltitude;
+    private String currentLocation;
+    private String predictNextTrajectoryPoint;
 
 }
