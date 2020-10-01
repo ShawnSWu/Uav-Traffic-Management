@@ -17,6 +17,8 @@ public interface RealTimeMonitorUavService {
 
     String UAV_UNSTABLE_NOTIFY_TOPIC = "/realTime/uav/unstable/%d";
 
+    String AI_MODEL_SERVER_URL = "http://mcn.nutn.edu.tw:5000/predict";
+
     List<FlightPlan> getCurrentlyExecutingFlightPlans(long accountId);
 
     List<FlightPlan> getCurrentlyExecutedFlightPlans(long accountId);
