@@ -2,6 +2,7 @@ package com.nutn.utm.service;
 
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
 import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
+import com.nutn.utm.model.dto.trajectory.TrajectoryStabilityDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.FlightData;
 
@@ -15,7 +16,7 @@ public interface RealTimeMonitorUavService {
 
     String UAV_REALTIME_TRAJECTORY_TOPIC = "/realTime/uav/trajectory/%d";
 
-    String UAV_UNSTABLE_NOTIFY_TOPIC = "/realTime/uav/unstable/%d";
+    String UAV_STABILITY_NOTIFY_TOPIC = "/realTime/uav/stability/%d";
 
     String AI_MODEL_SERVER_URL = "http://mcn.nutn.edu.tw:5000/predict";
 
@@ -36,5 +37,7 @@ public interface RealTimeMonitorUavService {
     void saveRealTimeUavRawData(LoRaGatewayMessage loRaGatewayMessage);
 
     TrajectoryAndPredictResultDto getCurrentlyTrajectoryWithPrediction(long accountId);
+
+    List<TrajectoryStabilityDto> getExecutingTrajectoryStability(long accountId);
 
 }
