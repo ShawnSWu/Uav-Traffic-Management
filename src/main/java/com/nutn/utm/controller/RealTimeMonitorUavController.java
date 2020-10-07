@@ -3,6 +3,7 @@ package com.nutn.utm.controller;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
 import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollectionDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
+import com.nutn.utm.model.dto.trajectory.TrajectoryStabilityDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.service.RealTimeMonitorUavService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
@@ -61,6 +62,12 @@ public class RealTimeMonitorUavController {
         long accountId = Long.parseLong(authentication.getPrincipal().toString());
         return geoJsonConverter.convertFlightTrajectoryToFeatureCollection(
                 realTimeMonitorUavService.getCurrentlyExecutedFlightTrajectory(accountId));
+    }
+
+    @GetMapping(value = "/stability")
+    List<TrajectoryStabilityDto> getFlightTrajectoryStability(Authentication authentication) {
+        long accountId = Long.parseLong(authentication.getPrincipal().toString());
+        return realTimeMonitorUavService.getExecutingTrajectoryStability(accountId);
     }
 
 }

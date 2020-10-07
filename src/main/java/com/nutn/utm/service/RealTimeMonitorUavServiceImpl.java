@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.model.UavSensingData;
 import com.nutn.utm.model.dto.ai.PredictRequestBodyDto;
 import com.nutn.utm.model.dto.ai.PredictResultListDto;
+import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
 import com.nutn.utm.model.dto.ai.TrajectoryFeatureDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
+import com.nutn.utm.model.dto.trajectory.TrajectoryStabilityDto;
 import com.nutn.utm.model.dto.weather.WeatherDataDto;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.FlightData;
@@ -35,6 +37,9 @@ import java.util.stream.Collectors;
 public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService {
 
     private WeakHashMap<String, FlightPlan> proceedingFlightPlanCache = new WeakHashMap<>();
+
+    @Autowired
+    private TrajectoryAnalysisService trajectoryAnalysisService;
 
     @Autowired
     private FlightPlanService flightPlanService;
@@ -156,6 +161,7 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
             flightDataRepository.save(flightData);
             long accountId = proceedingFlightPlanCache.get(macAddress).getUav().getPilot().getId();
             pushNewTrajectoryToMqttBroker(accountId);
+            pushNewStabilityToMqttBroker(accountId);
         });
     }
 
@@ -170,6 +176,16 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
         TrajectoryAndPredictResultDto trajectoryAndPredictResultDto = getCurrentlyTrajectoryWithPrediction(accountId);
         String predictTrajectory = geoJsonConverter.convertTrajectoryWithPredictionToString(trajectoryAndPredictResultDto.getPredictionResult(), trajectoryAndPredictResultDto.getExecutingFlightTrajectory());
         mqttMessagePublisher.sendToMqtt(String.format(UAV_REALTIME_TRAJECTORY_TOPIC, accountId), predictTrajectory);
+    }
+
+    private void pushNewStabilityToMqttBroker(long accountId) {
+        List<TrajectoryStabilityDto> stabilityDtoList = getExecutingTrajectoryStability(accountId);
+        try {
+            String stability = objectMapper.writeValueAsString(stabilityDtoList);
+            mqttMessagePublisher.sendToMqtt(String.format(UAV_STABILITY_NOTIFY_TOPIC, accountId), stability);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -239,5 +255,26 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
             LocalTime now = DateTimeUtils.getCurrentLocalTime();
             return endTime.isAfter(now);
         });
+    }
+
+    @Override
+    public List<TrajectoryStabilityDto> getExecutingTrajectoryStability(long accountId) {
+        Map<Long, List<FlightData>> executingFlightTrajectory = getCurrentlyExecutingFlightTrajectory(accountId);
+        List<TrajectoryStabilityDto> stabilityDtoList = new ArrayList<>();
+        executingFlightTrajectory.forEach((plan, trajectory) -> {
+            try {
+                List<List<Double>> trajectoryCoordinate = trajectory.stream()
+                        .map(flightData -> Arrays.asList(flightData.getLongitude(), flightData.getLatitude())).collect(Collectors.toList());
+                String flightPlan = trajectory.get(0).getFlightPlan().getFlightPlanWayPoints();
+                FlightPlanWayPointsDto flightPlanWayPoints = objectMapper.readValue(flightPlan, FlightPlanWayPointsDto.class);
+                double[][] planWayPointsCoordinate = flightPlanWayPoints.getCoordinate();
+                double stability = trajectoryAnalysisService.analysisTrajectoryStability(trajectoryCoordinate, planWayPointsCoordinate);
+                stabilityDtoList.add(TrajectoryStabilityDto.builder().planId(plan).stability(stability).build());
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return stabilityDtoList;
     }
 }
