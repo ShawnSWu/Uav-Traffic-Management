@@ -90,7 +90,7 @@ public class TrajectoryAnalyzer {
         return new FlightPlanSegment(firstWayPointFlightPlan, SecondWayPointFlightPlan, verticalDistance);
     }
 
-    public FlightPlanSegment getFlightPlanSegmentByTrajectoryPoint(TrajectoryPoint trajectoryPoint, double[][] flightPlan) {
+    public FlightPlanSegment getFlightPlanSegmentByTrajectoryPoint(TrajectoryPoint trajectoryPoint, Double[][] flightPlan) {
         FlightPlanWayPoint firstWayPointFlightPlan = null;
         FlightPlanWayPoint SecondWayPointFlightPlan = null;
         double verticalDistance = Double.MAX_VALUE;

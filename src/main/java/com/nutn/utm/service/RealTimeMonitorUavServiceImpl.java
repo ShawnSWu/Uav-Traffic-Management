@@ -267,8 +267,8 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
                         .map(flightData -> Arrays.asList(flightData.getLongitude(), flightData.getLatitude())).collect(Collectors.toList());
                 String flightPlan = trajectory.get(0).getFlightPlan().getFlightPlanWayPoints();
                 FlightPlanWayPointsDto flightPlanWayPoints = objectMapper.readValue(flightPlan, FlightPlanWayPointsDto.class);
-                double[][] planWayPointsCoordinate = flightPlanWayPoints.getCoordinate();
-                double stability = trajectoryAnalysisService.analysisTrajectoryStability(trajectoryCoordinate, planWayPointsCoordinate);
+                Double[][] planWayPointsCoordinate = flightPlanWayPoints.getCoordinate();
+                double stability = trajectoryAnalysisService.analyzeTrajectoryStability(trajectoryCoordinate, planWayPointsCoordinate);
                 stabilityDtoList.add(TrajectoryStabilityDto.builder().planId(plan).stability(stability).build());
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
