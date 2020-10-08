@@ -19,7 +19,7 @@ public class TrajectoryAnalysisServiceImpl implements TrajectoryAnalysisService 
     @Autowired
     ObjectMapper objectMapper;
 
-    public double analysisTrajectoryStability(List<List<Double>> trajectorys, double[][] flightPlan) {
+    public double analyzeTrajectoryStability(List<List<Double>> trajectorys, Double[][] flightPlan) {
         List<TrajectorySegment> trajectorySegments = new ArrayList<>();
 
         for (int i = 0; i < trajectorys.size(); i++) {

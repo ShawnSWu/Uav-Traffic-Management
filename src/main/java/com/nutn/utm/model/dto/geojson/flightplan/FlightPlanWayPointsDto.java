@@ -11,11 +11,11 @@ import java.io.IOException;
 @Getter
 public class FlightPlanWayPointsDto {
 
-    private double[][] coordinate;
+    private Double[][] coordinate;
 
     public FlightPlanWayPointsDto(){}
 
-    public FlightPlanWayPointsDto(double[][] coordinate) {
+    public FlightPlanWayPointsDto(Double[][] coordinate) {
         this.coordinate = coordinate;
     }
 

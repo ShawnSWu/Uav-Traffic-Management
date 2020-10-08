@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface TrajectoryAnalysisService {
 
-    double analysisTrajectoryStability(List<List<Double>> trajectorys, double[][] flightPlan);
+    double analyzeTrajectoryStability(List<List<Double>> trajectorys, Double[][] flightPlan);
 }
