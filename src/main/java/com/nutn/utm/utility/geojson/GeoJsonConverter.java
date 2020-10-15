@@ -65,7 +65,6 @@ public class GeoJsonConverter {
     private Properties createFlightPlanProperties(FlightPlan flightPlan, List<List<Double>> lineStringPoint) {
         List<Double> startPoint = lineStringPoint.get(0);
         List<Double> endPoint = lineStringPoint.get(lineStringPoint.size() - 1);
-        List<String> startAndEndPoint = Arrays.asList(startPoint.toString(), endPoint.toString());
 
         Properties properties = new Properties();
         properties.setProperty("startDate", DateTimeUtils.convertDateToString(flightPlan.getExecutionDate()));
@@ -75,8 +74,8 @@ public class GeoJsonConverter {
         properties.setProperty("startTime", DateTimeUtils.convertTimeToString(flightPlan.getStartTime()));
         properties.setProperty("endTime", DateTimeUtils.convertTimeToString(flightPlan.getEndTime()));
         properties.setProperty("description", flightPlan.getDescription());
-        properties.setProperty("startPoint", startAndEndPoint.get(0));
-        properties.setProperty("endPoint", startAndEndPoint.get(1));
+        properties.setProperty("startPoint", startPoint.toString());
+        properties.setProperty("endPoint", endPoint.toString());
         return properties;
     }
 
@@ -157,9 +156,14 @@ public class GeoJsonConverter {
                         .macAddress(macAddress)
                         .currentFlyAltitude(String.valueOf(maxFlyingAltitude))
                         .latestReceivingTime(String.format("%s-%s", date, time))
-                        .currentLocation(String.format("[%s, %s]",lastFlightData.getLongitude(), lastFlightData.getLatitude()))
-                        .predictNextTrajectoryPoint(String.format("[%s, %s]", predictTrajectoryPoint.getLongitude(), predictTrajectoryPoint.getLatitude()))
+                        .currentLocation(String.format("[%s, %s]", lastFlightData.getLongitude(), lastFlightData.getLatitude()))
                         .build();
+                if (Optional.ofNullable(predictTrajectoryPoint).isPresent()) {
+                    properties.setPredictNextTrajectoryPoint(String.format("[%s, %s]", predictTrajectoryPoint.getLongitude(), predictTrajectoryPoint.getLatitude()));
+                }else{
+                    properties.setPredictNextTrajectoryPoint("[]");
+                }
+
                 Properties trajectoryProperties = createPredictFlightTrajectoryProperties(properties, flightDataList);
 
                 featureCollectionBuilder.addLineString(planFlightTrajectory, trajectoryProperties);
