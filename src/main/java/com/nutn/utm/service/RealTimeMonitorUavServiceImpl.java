@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -192,14 +193,16 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     private Map<Long, TrajectoryFeatureDto> predictUavTrajectory(Map<Long, List<FlightData>> executingTrajectory) {
         Map<Long, TrajectoryFeatureDto> predictResultMap = new HashMap<>();
         List<PredictRequestBodyDto> aiModelFeatureMap = combineWeatherAndTrajectoryToBecomeAiModelFeature(executingTrajectory);
-        ResponseEntity<PredictResultListDto> predictResponse = restTemplate.postForEntity(AI_MODEL_SERVER_URL, aiModelFeatureMap, PredictResultListDto.class);
-
-        Optional.of(predictResponse).ifPresent(responseEntity -> {
-            Objects.requireNonNull(responseEntity.getBody()).getPredictResult().forEach(predictRequestBodyDto -> {
-                predictResultMap.put(predictRequestBodyDto.getPlanId(), predictRequestBodyDto.getTrajectoryFeature().get(aiTimeStep));
+        try {
+            ResponseEntity<PredictResultListDto> predictResponse = restTemplate.postForEntity(AI_MODEL_SERVER_URL, aiModelFeatureMap, PredictResultListDto.class);
+            Optional.of(predictResponse).ifPresent(responseEntity -> {
+                Objects.requireNonNull(responseEntity.getBody()).getPredictResult().forEach(predictRequestBodyDto -> {
+                    predictResultMap.put(predictRequestBodyDto.getPlanId(), predictRequestBodyDto.getTrajectoryFeature().get(aiTimeStep));
+                });
             });
-        });
-
+        } catch (RestClientException e) {
+            e.printStackTrace();
+        }
         return predictResultMap;
     }
 

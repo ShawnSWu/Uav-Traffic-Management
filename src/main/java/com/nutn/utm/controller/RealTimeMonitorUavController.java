@@ -2,6 +2,7 @@ package com.nutn.utm.controller;
 
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanFeatureCollectionDto;
 import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollectionDto;
+import com.nutn.utm.model.dto.mqtt.MqttParameterDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryStabilityDto;
 import com.nutn.utm.model.entity.FlightPlan;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -68,6 +71,16 @@ public class RealTimeMonitorUavController {
     List<TrajectoryStabilityDto> getFlightTrajectoryStability(Authentication authentication) {
         long accountId = Long.parseLong(authentication.getPrincipal().toString());
         return realTimeMonitorUavService.getExecutingTrajectoryStability(accountId);
+    }
+
+    @GetMapping(value = "/mqttParameter")
+    MqttParameterDto getMqttBrokerParameter() {
+        ResourceBundle properties = ResourceBundle.getBundle("mqtt");
+        String username = properties.getString("mqtt.username");
+        String password = properties.getString("mqtt.password");
+        String host = properties.getString("mqtt.client.host");
+        String port = properties.getString("mqtt.client.port");
+        return MqttParameterDto.builder().username(username).password(password).host(host).port(port).build();
     }
 
 }
