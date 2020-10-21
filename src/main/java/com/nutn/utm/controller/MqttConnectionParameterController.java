@@ -28,7 +28,7 @@ public class MqttConnectionParameterController {
                 .password(password)
                 .host(host)
                 .port(port)
-                .ClientId(clientId)
+                .clientId(clientId)
                 .build();
     }
 
