@@ -7,5 +7,5 @@
 #### **The system uses Spring boot Framework as the main framework of the Web Server. The database uses a connected database MySQL 5.7 to store flight plan trajectories, pilots, flight trajectories and other information through JSON Web Tokens (JWT), and is used as a verification mechanism for system access, and runs on Docker containers. [Website](http://utm-system-frontend.herokuapp.com/realtime_map/html/drone-map.html)**
 
 ---
-### System architecture
+### Thesis architecture
 ![](https://i.imgur.com/V6zrzko.png)
