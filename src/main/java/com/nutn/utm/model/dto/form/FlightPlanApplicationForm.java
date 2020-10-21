@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nutn.utm.model.dto.form.validations.annotations.MinCoordinateCount;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -16,8 +13,8 @@ import javax.validation.constraints.NotNull;
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
-@Getter
-@Setter
+@Builder
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FlightPlanApplicationForm {
