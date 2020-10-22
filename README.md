@@ -16,6 +16,6 @@ Test Account:ShawnWu, Password:password**
 ### Thesis architecture
 ![](https://i.imgur.com/V6zrzko.png)
 
-
+---
 ### Monitor drone location and compute flight plan stability when utm receive drone data.
 ![](https://i.imgur.com/hUnxbkp.gif)
