@@ -13,7 +13,8 @@ The system uses Spring boot Framework as the main framework of the Web Server.Th
 Test Account:ShawnWu, Password:password**
 
 ---
-## Drone flight simulator
+## How to test this UTM?
+*In the experiment, I used a real drone for testing, but because you don’t have a drone equipped with LoRa, so If you try to use monitoring drone service, predictive trajectory service, caculate flight stability service, please contact swshawnwu@gmail.com, and I will tell you how to simulate real-time drone flight.*
 
 
 ---
