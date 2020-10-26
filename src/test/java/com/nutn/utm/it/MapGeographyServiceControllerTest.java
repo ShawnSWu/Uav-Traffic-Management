@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("dev")
-public class MapGeographyControllerTest extends BaseMvcTest{
+public class MapGeographyServiceControllerTest extends BaseMvcTest{
 
     @Autowired
     MapGeographyController mapInfoController;

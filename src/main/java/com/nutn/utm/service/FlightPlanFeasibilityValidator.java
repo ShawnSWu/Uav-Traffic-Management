@@ -2,6 +2,8 @@ package com.nutn.utm.service;
 
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
+import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeature;
+import com.nutn.utm.model.dto.response.error.FlightPlanWayPointVerifyResultDto;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.utility.DateTimeUtils;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
@@ -24,10 +28,16 @@ public class FlightPlanFeasibilityValidator {
     @Autowired
     FlightPlanService flightPlanService;
 
+    @Autowired
+    MapGeographyService mapGeographyService;
+
+    private FlightPlanWayPointValidator flightPlanWayPointValidator = new FlightPlanWayPointValidator();
+
     public void validateFeasibility(FlightPlanApplicationForm planFormDto) {
         String executionDate = planFormDto.getExecutionDate();
         String startTime = planFormDto.getStartTime();
         String endTime = planFormDto.getEndTime();
+        Double[][] planCoordinate = planFormDto.getFlightPlanWayPointsDto().getCoordinate();
 
         if (!isEndTimeLaterThanStartTime(startTime, endTime)) {
             throw new InvalidRequestException(startTime, "endTime",
@@ -40,6 +50,13 @@ public class FlightPlanFeasibilityValidator {
         if (isApplicationFormTimeConflictWithOtherFlightPlan(planFormDto.getMacAddress(), planFormDto.getExecutionDate(), startTime, endTime)) {
             throw new InvalidRequestException(startTime, "startTime",
                     String.format(ValidationMessage.PLAN_TIME_CONFLICT, startTime, endTime));
+        }
+
+        List<GeographyLimitAreaFeature> forbidAreaFeatures = mapGeographyService.getForbidAreaDto().getFeatures();
+        FlightPlanWayPointVerifyResultDto wayPointVerifyResult = flightPlanWayPointValidator.verifyPlanWayPointLegality(planCoordinate, forbidAreaFeatures);
+        if (!wayPointVerifyResult.isApprovedApply()) {
+            throw new InvalidRequestException(Arrays.deepToString(planCoordinate), "planCoordinate",
+                    wayPointVerifyResult.getVerifyResultMessage());
         }
 
     }

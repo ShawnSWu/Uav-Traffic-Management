@@ -140,7 +140,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -326,7 +328,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -462,7 +466,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -653,7 +659,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -794,7 +802,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -930,7 +940,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -1066,7 +1078,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -1252,7 +1266,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -1438,7 +1454,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -1574,7 +1592,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -1710,7 +1730,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -1846,7 +1868,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -2032,7 +2056,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -2218,7 +2244,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -2509,7 +2537,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -2695,7 +2725,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -2881,7 +2913,9 @@
           ]
         ]
       },
-      "properties": {}
+      "properties": {
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -3018,7 +3052,8 @@
         ]
       },
       "properties": {
-      }
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -3155,7 +3190,8 @@
         ]
       },
       "properties": {
-      }
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -3292,7 +3328,8 @@
         ]
       },
       "properties": {
-      }
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -3429,7 +3466,8 @@
         ]
       },
       "properties": {
-      }
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -3566,7 +3604,8 @@
         ]
       },
       "properties": {
-      }
+	"description":"Prohibited area around the airport of the ROC"
+}
     },
     {
       "type": "Feature",
@@ -3703,7 +3742,8 @@
         ]
       },
       "properties": {
-      }
+	"description":"Prohibited area around the airport of the ROC"
+}
     }
   ]
 }

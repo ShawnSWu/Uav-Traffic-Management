@@ -1,5 +1,8 @@
 package com.nutn.utm.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeatureCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -11,11 +14,25 @@ import java.io.IOException;
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 @Service
-public class MapGeographyImpl implements MapGeography{
+public class MapGeographyServiceImpl implements MapGeographyService {
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Override
     public byte[] getForbidArea() {
         return getResourceFile("static/forbid_area_airport.json");
+    }
+
+    @Override
+    public GeographyLimitAreaFeatureCollection getForbidAreaDto() {
+        GeographyLimitAreaFeatureCollection geographyLimitAreaFeatureCollection = null;
+        try {
+            geographyLimitAreaFeatureCollection = objectMapper.readValue(getForbidArea(), GeographyLimitAreaFeatureCollection.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return geographyLimitAreaFeatureCollection;
     }
 
     @Override
