@@ -18,6 +18,9 @@ public interface ValidationMessage {
 
     String PLAN_TIME_CONFLICT = "This UAV will be proceeding another flight plan at %s to %s, Please choose another time.";
 
+    String PLAN_WAY_POINT_LEGITIMATE = "Your flight plan route has been approved.";
+    String PLAN_WAY_POINT_ILLEGAL = "Your flight plan is illegal, the drone will fly over the「%s」area, please modify your path.";
+
 
     String PASSWORD_NOT_CONFORM_FORMAT = "Password must be greater than 8 characters and less than 16 characters.";
     String ACCOUNT_NOT_CONFORM_FORMAT = "Account must be greater than 8 characters and less than 16 characters.";
