@@ -10,12 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import sun.security.acl.PrincipalImpl;
 
 import javax.crypto.SecretKey;
-import java.security.Principal;
 import java.util.Date;
 import java.util.ResourceBundle;
 
