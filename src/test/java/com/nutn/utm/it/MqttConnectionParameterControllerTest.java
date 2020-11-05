@@ -3,6 +3,7 @@ package com.nutn.utm.it;
 import com.nutn.utm.controller.MqttConnectionParameterController;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
+@ActiveProfiles("dev")
 public class MqttConnectionParameterControllerTest extends BaseMvcTest{
 
     private final String URL_PREFIX = "/mqttConnectionParameter";
