@@ -4,3 +4,6 @@ mqtt.url=tcp://127.0.0.1:1883
 mqtt.clientId=clientId
 mqtt.default.topic=topic
 mqtt.qos: 1
+
+mqtt.client.host=120.114.183.20
+mqtt.client.port=8901
