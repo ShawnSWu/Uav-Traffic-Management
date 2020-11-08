@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker: # run the steps with Docker
-      - image: circleci/openjdk:8-stretch
+      - image: circleci/openjdk:11.0.3-jdk-stretch
 
     steps:
       - checkout
