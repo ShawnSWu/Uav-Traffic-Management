@@ -10,3 +10,6 @@ jobs:
       - run:
           name: Run tests
           command: mvn test
+      - run:
+          name: Package jar
+          command: mvn package
