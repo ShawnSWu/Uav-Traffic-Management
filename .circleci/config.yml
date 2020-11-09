@@ -7,6 +7,20 @@ jobs:
 
     steps:
       - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - sample-springboot-api-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: sample-springboot-api-{{ checksum "pom.xml" }}
+
       - run:
           name: Run tests
           command: mvn '-Dtest=utm.ut.*Test' test
+
+      - run: mvn clean package
