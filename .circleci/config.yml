@@ -10,6 +10,3 @@ jobs:
       - run:
           name: Run tests
           command: mvn '-Dtest=utm.ut.*Test' test
-      - run:
-          name: Package jar
-          command: mvn package
