@@ -1,6 +1,5 @@
 package com.nutn.utm.ut;
 
-import com.nutn.utm.UtmApplication;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
 import com.nutn.utm.model.entity.FlightPlan;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -33,8 +31,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@Transactional
-@SpringBootTest(classes = UtmApplication.class)
+@SpringBootTest
 @ActiveProfiles("dev")
 @Sql(scripts = {"classpath:clear.sql", "classpath:testData.sql"}, executionPhase = BEFORE_TEST_METHOD)
 public class FlightPlanServiceTest {
