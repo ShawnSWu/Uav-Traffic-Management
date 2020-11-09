@@ -1,6 +1,7 @@
 package com.nutn.utm.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
  * @author swshawnwu@gmail.com(ShawnWu)
  */
 @Entity(name = "uav")
-@Getter
+@Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Uav {

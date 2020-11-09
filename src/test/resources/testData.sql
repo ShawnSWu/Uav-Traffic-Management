@@ -68,7 +68,7 @@ values (4009, '2020-09-27', '01:12:19', '',  22.619398524467492, 120.27111053466
 
 
 insert into flight_plan(id,  execution_date, start_time, max_flying_altitude, end_time, flight_plan_waypoints, description, uav)
-values (3302, '2090-09-27', '00:15:00', 20, '06:35:00',
+values (3302, '2190-11-27', '00:15:00', 20, '06:35:00',
 '{
     "coordinate": [
           [
@@ -99,8 +99,40 @@ values (3302, '2090-09-27', '00:15:00', 20, '06:35:00',
           ]
         }', 'ShawnWu first flight', 2201);
 
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5001, '2020-09-27', '04:02:00', '',  22.634530353625664, 120.32587051391602, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5002, '2020-09-27', '04:02:10', '',  22.638095201780473, 120.3427791595459, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5003, '2020-09-27', '04:02:15', '',  22.644353267028727, 120.34852981567381, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5004, '2020-09-27', '04:02:20', '',  22.63817441957783, 120.35891532897948, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5005, '2020-09-27', '04:02:25', '',  22.627004259373486, 120.36784172058105, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5006, '2020-09-27', '04:02:30', '',  22.61908160971607, 120.35307884216307, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5007, '2020-09-27', '04:02:35', '',  22.614644726512385, 120.34518241882323, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5008, '2020-09-27', '04:02:40', '',  22.60814760359453, 120.35865783691406, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+values (5009, '2020-09-27', '04:02:45', '',  22.60672136481142, 120.36792755126953, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+insert into flight_data(id, date, time, hex_data_packet, latitude, longitude, altitude, gyro_x, gyro_y, gyro_z, acc_x, acc_y, acc_z, ned_north, ned_east, ned_down, pitch, yaw, roll, flight_plan)
+
+values (5010, '2020-09-27', '04:02:50', '',  22.611950834736213, 120.37436485290527, 20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3302);
+
+
 insert into flight_plan(id,  execution_date, start_time, max_flying_altitude, end_time, flight_plan_waypoints, description, uav)
-values (3303, '2090-09-27', '02:50:00', 20, '05:30:00',
+values (3303, '2020-09-27', '02:50:00', 20, '05:30:00',
 '{
     "coordinate": [
           [
