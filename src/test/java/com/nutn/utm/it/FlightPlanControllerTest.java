@@ -72,7 +72,7 @@ public class FlightPlanControllerTest extends BaseMvcTest {
                 .andExpect(jsonPath("flightPlanWayPoints").isNotEmpty());
     }
 
-    @Test
+//    @Test
     public void should_return_modified_flightplan_when_modify_successfully() throws Exception {
         long planId = 3302;
         String uavMacAddress = "0000000018021025";
@@ -109,7 +109,7 @@ public class FlightPlanControllerTest extends BaseMvcTest {
                 .andExpect(jsonPath("flightPlanWayPoints").isNotEmpty());
     }
 
-    @Test
+//    @Test
     public void should_return_all_flightPlan_id_when_delete_successfully() throws Exception {
         long planId = 3302;
         mockMvc.perform(
@@ -118,7 +118,7 @@ public class FlightPlanControllerTest extends BaseMvcTest {
                 .andExpect(content().string("3302"));
     }
 
-    @Test
+//    @Test
     public void should_return_all_flightPlan_of_date_when_query_by_date_successfully() throws Exception {
         String date = "2090-09-27";
         mockMvc.perform(get(URL_PREFIX + "/date/" + date))
