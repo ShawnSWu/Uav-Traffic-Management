@@ -37,12 +37,6 @@ public class MqttConfig {
     @Value("${mqtt_qos}")
     private String qos;
 
-    @Value("${mqtt_client_host}")
-    private String clientHost;
-
-    @Value("${mqtt_client_port}")
-    private String clientPort;
-
 //    ResourceBundle properties = ResourceBundle.getBundle("mqtt");
 //    String username = properties.getString("mqtt.username");
 //    String password = properties.getString("mqtt.password");
