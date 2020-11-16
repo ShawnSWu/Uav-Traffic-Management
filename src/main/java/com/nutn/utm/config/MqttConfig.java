@@ -2,6 +2,7 @@ package com.nutn.utm.config;
 
 import com.nutn.utm.service.mqtt.NutnMqttBrokerMessageHandler;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -14,17 +15,41 @@ import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 @Configuration
 public class MqttConfig {
 
-    ResourceBundle properties = ResourceBundle.getBundle("mqtt");
-    String username = properties.getString("mqtt.username");
-    String password = properties.getString("mqtt.password");
-    String url = properties.getString("mqtt.url");
-    String clientId = properties.getString("mqtt.clientId");
-    String defaultTopic = properties.getString("mqtt.default.topic");
-    int qos = Integer.parseInt(properties.getString("mqtt.qos"));
+    @Value("${mqtt_username}")
+    private String username;
+
+    @Value("${mqtt_password}")
+    private String password;
+
+    @Value("${mqtt_url}")
+    private String url;
+
+    private String clientId = UUID. randomUUID().toString();
+
+    @Value("${mqtt_default_topic}")
+    private String defaultTopic;
+
+    @Value("${mqtt_qos}")
+    private String qos;
+
+    @Value("${mqtt_client_host}")
+    private String clientHost;
+
+    @Value("${mqtt_client_port}")
+    private String clientPort;
+
+//    ResourceBundle properties = ResourceBundle.getBundle("mqtt");
+//    String username = properties.getString("mqtt.username");
+//    String password = properties.getString("mqtt.password");
+//    String url = properties.getString("mqtt.url");
+//    String clientId = properties.getString("mqtt.clientId");
+//    String defaultTopic = properties.getString("mqtt.default.topic");
+//    String qos = properties.getString("mqtt.qos");
 
     @Bean
     public DirectChannel fromMqBrokerInputChannel() {
@@ -39,6 +64,7 @@ public class MqttConfig {
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         MqttConnectOptions connectOptions = new MqttConnectOptions();
+        System.out.println(url);
         connectOptions.setServerURIs(new String[]{url});
         connectOptions.setUserName(username);
         connectOptions.setPassword(password.toCharArray());
@@ -51,10 +77,10 @@ public class MqttConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(url, clientId, mqttClientFactory(),  defaultTopic);
+                new MqttPahoMessageDrivenChannelAdapter(url, clientId, mqttClientFactory(), defaultTopic);
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
-        adapter.setQos(qos);
+        adapter.setQos(Integer.parseInt(qos));
         adapter.setOutputChannel(fromMqBrokerInputChannel());
         return adapter;
     }
@@ -63,7 +89,7 @@ public class MqttConfig {
     @ServiceActivator(inputChannel = "toMqttBrokerOutputChannel")
     public MqttPahoMessageHandler mqttOutbound() {
         MqttPahoMessageHandler handler = new MqttPahoMessageHandler(url, clientId, mqttClientFactory());
-        handler.setDefaultQos(qos);
+        handler.setDefaultQos(Integer.parseInt(qos));
         return handler;
     }
 

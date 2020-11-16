@@ -1,5 +1,6 @@
 package com.nutn.utm.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,25 @@ import java.util.ResourceBundle;
  */
 @Configuration
 public class JpaConfig {
+
+//    private ResourceBundle properties = ResourceBundle.getBundle("datasource");
+//    private String driverClass = properties.getString("driverClass");
+//    private String url = properties.getString("url");
+//    private String username = properties.getString("username");
+//    private String password = properties.getString("password");
+
+    @Value("${db_driver_class}")
+    private String driverClass;
+
+    @Value("${db_url}")
+    private String url;
+
+    @Value("${db_username}")
+    private String username;
+
+    @Value("${db_password}")
+    private String password;
+
     @Bean
     @Profile("dev")
     @ConditionalOnMissingBean
@@ -30,12 +50,11 @@ public class JpaConfig {
     @Bean
     @Profile("prod")
     public DataSource mysql() {
-        ResourceBundle properties = ResourceBundle.getBundle("datasource");
         return DataSourceBuilder.create()
-                .driverClassName(properties.getString("driverClass"))
-                .url(properties.getString("url"))
-                .username(properties.getString("username"))
-                .password(properties.getString("password"))
+                .driverClassName(driverClass)
+                .url(url)
+                .username(username)
+                .password(password)
                 .build();
     }
 }
