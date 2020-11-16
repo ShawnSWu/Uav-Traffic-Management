@@ -6,16 +6,14 @@ import com.nutn.utm.model.entity.Pilot;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import sun.security.acl.PrincipalImpl;
 
 import javax.crypto.SecretKey;
-import java.security.Principal;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -26,10 +24,14 @@ import java.util.ResourceBundle;
 @Service
 public class JwtServiceImpl implements JwtService{
 
-    final static ResourceBundle resource = ResourceBundle.getBundle("secret");
-    final static String secret = resource.getString("jwt.secret");
-    static final long expirationTime = 86400000;//millisecond, 1 Day.
-    public final static String ACCOUNT_ID = "accountId";
+//    private final static ResourceBundle resource = ResourceBundle.getBundle("secret");
+//    private final static String secret = resource.getString("jwt.secret");
+
+    @Value("${jwt_secret}")
+    private String secret;
+
+    private static final long expirationTime = 86400000;//millisecond, 1 Day.
+    private final static String ACCOUNT_ID = "accountId";
 
     public String createToken(Pilot pilot) {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
