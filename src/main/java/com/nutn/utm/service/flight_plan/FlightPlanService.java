@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.flight_plan;
 
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
 import com.nutn.utm.model.entity.FlightData;

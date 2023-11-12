@@ -1,7 +1,7 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.trajectory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nutn.utm.service.stability.*;
+import com.nutn.utm.service.stability_alg.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -5,7 +5,7 @@ import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollecti
 import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryStabilityDto;
 import com.nutn.utm.model.entity.FlightPlan;
-import com.nutn.utm.service.RealTimeMonitorUavService;
+import com.nutn.utm.service.trajectory.RealTimeMonitorUavService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,10 +24,10 @@ import java.util.List;
 public class RealTimeMonitorUavController {
 
     @Autowired
-    GeoJsonConverter geoJsonConverter;
+    private GeoJsonConverter geoJsonConverter;
 
     @Autowired
-    RealTimeMonitorUavService realTimeMonitorUavService;
+    private RealTimeMonitorUavService realTimeMonitorUavService;
 
     @GetMapping(value = "/flightPlan/executing")
     FlightPlanFeatureCollectionDto getCurrentlyExecutingFlightPlans(Authentication authentication) {

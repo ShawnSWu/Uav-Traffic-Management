@@ -1,7 +1,7 @@
 package com.nutn.utm.controller;
 
 import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeatureCollection;
-import com.nutn.utm.service.MapGeographyService;
+import com.nutn.utm.service.trajectory.MapGeographyService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class MapGeographyController {
 
     @Autowired
-    MapGeographyService mapGeographyService;
+    private MapGeographyService mapGeographyService;
 
     @Autowired
-    GeoJsonConverter geoJsonConverter;
+    private GeoJsonConverter geoJsonConverter;
 
     @GetMapping(value = "/forbidArea/airport")
     public GeographyLimitAreaFeatureCollection getForbidAreaGeoJson(){

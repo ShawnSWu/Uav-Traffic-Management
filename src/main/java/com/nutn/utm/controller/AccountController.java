@@ -6,7 +6,7 @@ import com.nutn.utm.model.dto.form.SignUpFormDto;
 import com.nutn.utm.model.dto.response.LogInResponseDto;
 import com.nutn.utm.model.dto.response.SignUpResponseDto;
 import com.nutn.utm.model.entity.Uav;
-import com.nutn.utm.service.AccountService;
+import com.nutn.utm.service.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.uav;
 
 import com.nutn.utm.exception.NotFoundFlightPlanException;
 import com.nutn.utm.model.dto.response.message.ApiExceptionMessage;

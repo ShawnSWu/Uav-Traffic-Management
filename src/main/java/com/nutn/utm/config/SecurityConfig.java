@@ -1,6 +1,8 @@
 package com.nutn.utm.config;
 
 import com.nutn.utm.service.jwt.JwtAuthorizationFilter;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 
@@ -23,7 +25,13 @@ import static java.util.Collections.singletonList;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Value("${allowed.origins}")
+    private String allowedOrigins;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -40,10 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthorizationFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    CorsConfigurationSource corsConfigurationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> allowOrigins = singletonList("http://localhost:63342");
-        configuration.setAllowedOrigins(singletonList("*"));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
         configuration.setAllowedMethods(singletonList("*"));
         configuration.setAllowedHeaders(singletonList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -53,11 +60,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilterBean() {
-        return new JwtAuthorizationFilter();
+        return jwtAuthorizationFilter;
     }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
     }
 }

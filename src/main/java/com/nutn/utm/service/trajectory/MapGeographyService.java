@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.trajectory;
 
 import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeatureCollection;
 

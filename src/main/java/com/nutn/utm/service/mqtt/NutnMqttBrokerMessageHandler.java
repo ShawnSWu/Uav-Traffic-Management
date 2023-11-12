@@ -1,6 +1,6 @@
 package com.nutn.utm.service.mqtt;
 
-import com.nutn.utm.service.RealTimeMonitorUavService;
+import com.nutn.utm.service.trajectory.RealTimeMonitorUavService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.handler.AbstractMessageHandler;
 import org.springframework.messaging.Message;

@@ -6,23 +6,19 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 import javax.sql.DataSource;
-import java.util.ResourceBundle;
 
 /**
  * @author swshawnwu@gmail.com(ShawnWu)
  */
+@PropertySource(value = {"classpath:datasource.properties"})
 @Configuration
 public class JpaConfig {
 
-//    private ResourceBundle properties = ResourceBundle.getBundle("datasource");
-//    private String driverClass = properties.getString("driverClass");
-//    private String url = properties.getString("url");
-//    private String username = properties.getString("username");
-//    private String password = properties.getString("password");
 
     @Value("${db_driver_class}")
     private String driverClass;

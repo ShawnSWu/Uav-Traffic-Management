@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.UtmApplication;
 import com.nutn.utm.model.entity.Pilot;
-import com.nutn.utm.service.AccountService;
+import com.nutn.utm.service.account.AccountService;
 import com.nutn.utm.service.jwt.JwtService;
 import org.junit.Before;
 import org.junit.runner.RunWith;

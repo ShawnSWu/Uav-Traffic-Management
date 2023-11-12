@@ -1,4 +1,0 @@
-driver-class=com.mysql.cj.jdbc.Driver
-url=jdbc:mysql://127.0.0.1:3306/utm?useUnicode=true&characterEncoding=utf-8&serverTimezone=CST
-username=root
-password=password

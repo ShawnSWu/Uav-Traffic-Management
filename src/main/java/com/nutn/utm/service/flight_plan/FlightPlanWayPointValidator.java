@@ -1,8 +1,7 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.flight_plan;
 
 import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeature;
 import com.nutn.utm.model.dto.response.error.FlightPlanWayPointVerifyResultDto;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

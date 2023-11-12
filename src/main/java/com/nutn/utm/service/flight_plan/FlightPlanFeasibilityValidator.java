@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.flight_plan;
 
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
@@ -6,6 +6,8 @@ import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeature;
 import com.nutn.utm.model.dto.response.error.FlightPlanWayPointVerifyResultDto;
 import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.model.entity.Uav;
+import com.nutn.utm.service.trajectory.MapGeographyService;
+import com.nutn.utm.service.uav.UavService;
 import com.nutn.utm.utility.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

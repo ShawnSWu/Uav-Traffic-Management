@@ -1,5 +1,5 @@
-mqtt.username=username
-mqtt.password=password
+mqtt_username=username
+mqtt_password=password
 mqtt.url=tcp://127.0.0.1:1883
 mqtt.clientId=clientId
 mqtt.default.topic=topic

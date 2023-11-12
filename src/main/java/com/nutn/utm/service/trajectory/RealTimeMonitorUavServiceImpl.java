@@ -1,20 +1,21 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.trajectory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.model.UavSensingData;
 import com.nutn.utm.model.dto.ai.PredictRequestBodyDto;
 import com.nutn.utm.model.dto.ai.PredictResultListDto;
+import com.nutn.utm.model.dto.ai.TrajectoryFeatureDto;
 import com.nutn.utm.model.dto.geojson.flightplan.FlightPlanWayPointsDto;
 import com.nutn.utm.model.dto.mqtt.LoRaGatewayMessage;
-import com.nutn.utm.model.dto.ai.TrajectoryFeatureDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryAndPredictResultDto;
 import com.nutn.utm.model.dto.trajectory.TrajectoryStabilityDto;
 import com.nutn.utm.model.dto.weather.WeatherDataDto;
-import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.FlightData;
-import com.nutn.utm.repository.FlightPlanRepository;
+import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.repository.FlightDataRepository;
+import com.nutn.utm.repository.FlightPlanRepository;
+import com.nutn.utm.service.flight_plan.FlightPlanService;
 import com.nutn.utm.service.mqtt.MqttMessagePublisher;
 import com.nutn.utm.utility.DateTimeUtils;
 import com.nutn.utm.utility.cayenne.CayenneLPPDataParser;
@@ -58,10 +59,10 @@ public class RealTimeMonitorUavServiceImpl implements RealTimeMonitorUavService 
     private MqttMessagePublisher mqttMessagePublisher;
 
     @Autowired
-    GeoJsonConverter geoJsonConverter;
+    private GeoJsonConverter geoJsonConverter;
 
     @Autowired
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     private final int aiTimeStep = 4;
 

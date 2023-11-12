@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.account;
 
 import com.nutn.utm.exception.NotFoundFlightPlanException;
 import com.nutn.utm.exception.SignUpException;

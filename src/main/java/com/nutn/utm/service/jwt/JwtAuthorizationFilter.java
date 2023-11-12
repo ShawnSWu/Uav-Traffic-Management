@@ -2,7 +2,7 @@ package com.nutn.utm.service.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.model.dto.response.JwtAuthResponseDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -17,15 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@AllArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION = "Authorization";
 
-    @Autowired
-    JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,

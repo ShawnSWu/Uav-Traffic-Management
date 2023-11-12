@@ -8,7 +8,7 @@ import com.nutn.utm.model.dto.geojson.trajectory.FlightTrajectoryFeatureCollecti
 import com.nutn.utm.model.dto.response.FlightPlanApplicationResponseDto;
 import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.model.entity.FlightPlan;
-import com.nutn.utm.service.FlightPlanService;
+import com.nutn.utm.service.flight_plan.FlightPlanService;
 import com.nutn.utm.utility.geojson.GeoJsonConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

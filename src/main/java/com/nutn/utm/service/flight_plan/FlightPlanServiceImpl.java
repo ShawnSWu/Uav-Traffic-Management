@@ -1,17 +1,19 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.flight_plan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.exception.InvalidRequestException;
 import com.nutn.utm.exception.NotFoundFlightPlanException;
 import com.nutn.utm.model.dto.form.FlightPlanApplicationForm;
-import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.model.dto.response.message.ApiExceptionMessage;
+import com.nutn.utm.model.dto.response.message.ValidationMessage;
 import com.nutn.utm.model.entity.FlightData;
 import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Pilot;
 import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.repository.FlightPlanRepository;
+import com.nutn.utm.service.account.AccountService;
+import com.nutn.utm.service.uav.UavService;
 import com.nutn.utm.utility.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

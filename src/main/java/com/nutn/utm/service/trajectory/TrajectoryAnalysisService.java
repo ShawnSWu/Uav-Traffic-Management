@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.trajectory;
 
 import java.util.List;
 

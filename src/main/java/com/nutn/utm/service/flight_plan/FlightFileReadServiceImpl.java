@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.flight_plan;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

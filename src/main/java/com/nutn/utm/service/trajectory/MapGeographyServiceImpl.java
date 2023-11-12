@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.trajectory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutn.utm.model.dto.geojson.geography.GeographyLimitAreaFeatureCollection;
@@ -17,7 +17,7 @@ import java.io.IOException;
 public class MapGeographyServiceImpl implements MapGeographyService {
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Override
     public byte[] getForbidArea() {

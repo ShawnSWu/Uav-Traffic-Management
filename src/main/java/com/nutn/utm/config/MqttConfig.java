@@ -14,7 +14,6 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 
-import java.util.ResourceBundle;
 import java.util.UUID;
 
 @Configuration
@@ -37,13 +36,6 @@ public class MqttConfig {
     @Value("${mqtt_qos}")
     private String qos;
 
-//    ResourceBundle properties = ResourceBundle.getBundle("mqtt");
-//    String username = properties.getString("mqtt.username");
-//    String password = properties.getString("mqtt.password");
-//    String url = properties.getString("mqtt.url");
-//    String clientId = properties.getString("mqtt.clientId");
-//    String defaultTopic = properties.getString("mqtt.default.topic");
-//    String qos = properties.getString("mqtt.qos");
 
     @Bean
     public DirectChannel fromMqBrokerInputChannel() {
@@ -58,7 +50,6 @@ public class MqttConfig {
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         MqttConnectOptions connectOptions = new MqttConnectOptions();
-        System.out.println(url);
         connectOptions.setServerURIs(new String[]{url});
         connectOptions.setUserName(username);
         connectOptions.setPassword(password.toCharArray());

@@ -1,7 +1,7 @@
 package com.nutn.utm.controller;
 
-import com.nutn.utm.service.FlightFileReadService;
-import com.nutn.utm.service.TrajectoryAnalysisService;
+import com.nutn.utm.service.flight_plan.FlightFileReadService;
+import com.nutn.utm.service.trajectory.TrajectoryAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +21,10 @@ import java.util.List;
 public class TrajectoryFileAnalysisController {
 
     @Autowired
-    TrajectoryAnalysisService trajectoryAnalysisService;
+    private TrajectoryAnalysisService trajectoryAnalysisService;
 
     @Autowired
-    FlightFileReadService flightFileReadService;
+    private FlightFileReadService flightFileReadService;
 
     @PostMapping("/file/trajectory")
     public ResponseEntity<List<List<Double>>> readTrajectoryFile(@RequestParam("file") MultipartFile multipartfile) {

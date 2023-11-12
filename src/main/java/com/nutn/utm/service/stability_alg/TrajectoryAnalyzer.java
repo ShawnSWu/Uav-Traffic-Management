@@ -1,4 +1,4 @@
-package com.nutn.utm.service.stability;
+package com.nutn.utm.service.stability_alg;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;

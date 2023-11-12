@@ -1,4 +1,4 @@
-package com.nutn.utm.service;
+package com.nutn.utm.service.account;
 
 import com.nutn.utm.model.dto.form.SignUpFormDto;
 import com.nutn.utm.model.dto.response.LogInResponseDto;

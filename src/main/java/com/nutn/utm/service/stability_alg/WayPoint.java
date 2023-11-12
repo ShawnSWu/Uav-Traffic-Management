@@ -1,4 +1,4 @@
-package com.nutn.utm.service.stability;
+package com.nutn.utm.service.stability_alg;
 
 public abstract class WayPoint {
 

@@ -6,10 +6,10 @@ import com.nutn.utm.model.entity.FlightPlan;
 import com.nutn.utm.model.entity.Pilot;
 import com.nutn.utm.model.entity.Uav;
 import com.nutn.utm.repository.FlightPlanRepository;
-import com.nutn.utm.service.AccountService;
-import com.nutn.utm.service.FlightPlanFeasibilityValidator;
-import com.nutn.utm.service.FlightPlanService;
-import com.nutn.utm.service.UavService;
+import com.nutn.utm.service.account.AccountService;
+import com.nutn.utm.service.flight_plan.FlightPlanFeasibilityValidator;
+import com.nutn.utm.service.flight_plan.FlightPlanService;
+import com.nutn.utm.service.uav.UavService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +19,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
